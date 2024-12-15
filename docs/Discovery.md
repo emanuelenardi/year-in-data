@@ -43,3 +43,6 @@ The data will be gathered from multiple places:
 |-- frontend
 `-- pipeline
 ```
+
+## Other notes
+Do not shorten Year in data to yid. 😭
