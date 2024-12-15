@@ -1,4 +1,8 @@
-from yd_pipeline.utils import parse_duration
+from yd_pipeline.utils import (
+    parse_duration,
+    check_columns_exist
+)
+import pandas as pd
 
 class TestParseDuration:
     """Test function parse_duration"""
@@ -41,3 +45,17 @@ class TestParseDuration:
             assert False, "Expected ValueError"
         except ValueError:
             pass
+
+class TestCheckColumnsExist:
+
+    def test_expected(self):
+        input_df = pd.DataFrame(data={
+            "A": [1, 2, 3],
+            "B": [4, 5, 6],
+            "C": [7, 8, 9],
+            "D": [10, 11, 12]
+        })
+        positive_check = check_columns_exist(input_df, ["A", "B"])
+        negative_check = check_columns_exist(input_df, ["E", "F", "A", "B"])
+        assert positive_check == True
+        assert negative_check == False

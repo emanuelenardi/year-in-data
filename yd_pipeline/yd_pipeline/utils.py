@@ -1,3 +1,5 @@
+import pandas as pd
+
 def parse_duration(duration: str) -> float:
     """Convert duration from the format `{hours}h {minutes}m` to milliseconds
 
@@ -14,6 +16,7 @@ def parse_duration(duration: str) -> float:
     duration_ms : float
         Duration in milliseconds
     """
+
     def throw_error():
         raise ValueError("duration must have type like `{hours}h {minutes}m`")
 
@@ -37,3 +40,21 @@ def parse_duration(duration: str) -> float:
             duration_ms += float(minutes) * 1000
 
     return duration_ms
+
+
+def check_columns_exist(df: pd.DataFrame, columns: list[str]) -> bool:
+    """Checks if a given dataframe contains the provided columns.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Dataframe to check columns.
+    columns : list[str]
+        Columns to check.
+
+    Returns
+    -------
+    bool
+        True if dataframe contains all columns provided. False otherwise.
+    """
+    return set(columns).issubset(df.columns)
