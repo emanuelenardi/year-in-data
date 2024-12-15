@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "yd-pipeline"
+version = "0.1.0"
+description = ""
+authors = ["aebel-shajan <aebelshajan@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+pandas = "^2.2.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
