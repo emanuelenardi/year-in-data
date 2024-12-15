@@ -1,4 +1,6 @@
 import pandas as pd
+from typing import BinaryIO
+import csv
 
 def parse_duration(duration: str) -> float:
     """Convert duration from the format `{hours}h {minutes}m` to milliseconds
@@ -58,3 +60,22 @@ def check_columns_exist(df: pd.DataFrame, columns: list[str]) -> bool:
         True if dataframe contains all columns provided. False otherwise.
     """
     return set(columns).issubset(df.columns)
+
+def detect_delimiter(csv_file: BinaryIO) -> str:
+    """
+    Detect the delimiter used in a CSV file.
+
+    Parameters
+    ----------
+    csv_file : BinaryIO
+        The path to the CSV file.
+
+    Returns
+    -------
+    str
+        The detected delimiter (e.g. ',', ';', '\t', etc.).
+    """
+    original_pos = csv_file.tell()
+    dialect = csv.Sniffer().sniff(csv_file.read(1024))
+    csv_file.seek(original_pos)
+    return dialect.delimiter
