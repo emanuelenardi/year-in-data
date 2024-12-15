@@ -45,4 +45,4 @@ The data will be gathered from multiple places:
 ```
 
 ## Other notes
-Do not shorten Year in data to yid. 😭
+Do not shorten Year in data to yid 😭. Use YD instead.
