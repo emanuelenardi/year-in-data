@@ -10,16 +10,15 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-@app.get('/heatmap-data', response_model=List[dict])
-def get_heatmap_data(start_date: Optional[str] = Query(None), end_date: Optional[str] = Query(None)):
+@app.get('/workout-data', response_model=List[dict])
+def get_heatmap_data(year: Optional[int] = Query(None)):
     conn = get_db_connection()
     cursor = conn.cursor()
-    print(start_date)
     query = "SELECT * FROM workout_data"
 
-    if start_date and end_date:
-        query += " WHERE date >= ? AND date <= ?"
-        rows = cursor.execute(query, (start_date, end_date)).fetchall()
+    if year:
+        query += " WHERE strftime('%Y', date) = ?"
+        rows = cursor.execute(query, (str(year),)).fetchall()
     else:
         rows = cursor.execute(query).fetchall()
     
