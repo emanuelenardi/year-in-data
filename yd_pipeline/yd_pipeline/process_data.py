@@ -70,7 +70,13 @@ def process_strong_data(csv_file: BinaryIO):
         daily_strong_df["date"],
         format="ISO8601"
     ).dt.date
-    daily_strong_df = daily_strong_df.groupby(["date", "workout_name"]).sum()
+    daily_strong_df = (daily_strong_df
+        .groupby(["date", "workout_name"])
+        .aggregate({
+            "workout_duration": "min",
+            "volume": "sum"
+        })
+    )
     daily_strong_df.to_sql("workout_data_daily", connection, if_exists='replace')
     
     
