@@ -39,16 +39,40 @@ def process_strong_data(csv_file: BinaryIO):
     
     # Select only columns to keep
     strong_df = strong_df[columns_to_keep]
+    rename_map = {
+        "Date": "date",
+        "Workout Name": "workout_name",
+        "Exercise Name": "exercise_name",
+        "Set Order": "set_order",
+        "Weight": "weight",
+        "Reps": "reps",
+        "Distance": "distance",
+        "Seconds": "seconds",
+        "Notes": "notes",
+        "Workout Duration": "workout_duration",
+    }
+    strong_df = strong_df.rename(columns=rename_map)
     
     # Parse durations to milliseconds
-    strong_df["Workout Duration"] = strong_df["Workout Duration"].apply(parse_duration)
+    strong_df["workout_duration"] = strong_df["workout_duration"].apply(parse_duration)
     
     # Calculate volume for each workout
-    strong_df["Volume"] = strong_df["Weight"] * strong_df["Reps"]
+    strong_df["volume"] = strong_df["weight"] * strong_df["reps"]
     
-    # Load pandas dataframe into sqlite table
+    # Store fine grain data in seperate table for future use
     connection = sqlite3.connect('data/output/year_in_data.db')
-    strong_df.to_sql('workout_data', connection, if_exists='replace')
+    strong_df.to_sql('workout_data_fine_grain', connection, if_exists='replace')
+
+    # For daily info
+    daily_columns = ["date", "workout_name", "workout_duration", "volume"]
+    daily_strong_df = strong_df[daily_columns]
+    daily_strong_df["date"] = pd.to_datetime(
+        daily_strong_df["date"],
+        format="ISO8601"
+    ).dt.date
+    daily_strong_df = daily_strong_df.groupby(["date", "workout_name"]).sum()
+    daily_strong_df.to_sql("workout_data_daily", connection, if_exists='replace')
+    
     
 
 def process_kindle_data(csv_file: BinaryIO):
