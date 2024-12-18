@@ -2,6 +2,7 @@ import pandas as pd
 from typing import BinaryIO
 import csv
 
+
 def parse_duration(duration: str) -> float:
     """Convert duration from the format `{hours}h {minutes}m` to milliseconds
 
@@ -60,6 +61,7 @@ def check_columns_exist(df: pd.DataFrame, columns: list[str]) -> bool:
         True if dataframe contains all columns provided. False otherwise.
     """
     return set(columns).issubset(df.columns)
+
 
 def detect_delimiter(csv_file: BinaryIO) -> str:
     """
