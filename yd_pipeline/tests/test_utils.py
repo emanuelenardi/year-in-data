@@ -8,17 +8,17 @@ class TestParseDuration:
 
     def test_expected(self):
         input_value = "10h 10m"
-        expected_output = 610000.0
+        expected_output = 36600000.0
         assert parse_duration(input_value) == expected_output
 
     def test_hours_only(self):
         input_value = "5h"
-        expected_output = 300000.0
+        expected_output = 18000000.0
         assert parse_duration(input_value) == expected_output
 
     def test_minutes_only(self):
         input_value = "30m"
-        expected_output = 30000.0
+        expected_output = 1800000.0
         assert parse_duration(input_value) == expected_output
 
     def test_invalid_format(self):

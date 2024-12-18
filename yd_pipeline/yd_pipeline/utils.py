@@ -37,10 +37,10 @@ def parse_duration(duration: str) -> float:
     for index, part in enumerate(parts):
         if part.endswith("h") and index == 0:
             hours = part.rstrip("h")
-            duration_ms += float(hours) * 60 * 1000
+            duration_ms += float(hours) * 60 * 60 * 1000
         elif part.endswith("m"):
             minutes = part.rstrip("m")
-            duration_ms += float(minutes) * 1000
+            duration_ms += float(minutes) * 60 *  1000
 
     return duration_ms
 
