@@ -25,11 +25,27 @@ def get_db_connection():
     return conn
 
 @app.get('/workout-data', response_model=List[dict])
-def get_heatmap_data(year: Optional[int] = Query(None)):
+def get_workout_data(year: Optional[int] = Query(None)):
     conn = get_db_connection()
     cursor = conn.cursor()
     query = "SELECT * FROM workout_data"
 
+    if year:
+        query += " WHERE strftime('%Y', date) = ?"
+        rows = cursor.execute(query, (str(year),)).fetchall()
+    else:
+        rows = cursor.execute(query).fetchall()
+    
+    conn.close()
+    
+    return [dict(row) for row in rows]
+
+@app.get('/kindle-data', response_model=List[dict])
+def get_kindle_data(year: Optional[int] = Query(None)):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT * FROM kindle_data_daily"
+    
     if year:
         query += " WHERE strftime('%Y', date) = ?"
         rows = cursor.execute(query, (str(year),)).fetchall()
