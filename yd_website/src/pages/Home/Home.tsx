@@ -3,6 +3,7 @@ import styles from "./Home.module.css"
 import { fetchData } from "../../api/axiosClient";
 import CalHeatmap from 'cal-heatmap';
 import CalendarLabel from 'cal-heatmap/plugins/CalendarLabel';
+import Legend from 'cal-heatmap/plugins/Legend';
 import 'cal-heatmap/cal-heatmap.css';
 
 interface Workout {
@@ -61,6 +62,7 @@ const Home = () => {
       >
         <h2>Workout Activity (From Strong workout app)</h2>
         <div id="workout-heatmap"></div>
+        <div id="workout-legend"></div>
         <p>
           Damn I fell off. Although I feel like I've still been gaining muscle more now.
           I started my first job near the end of April. You can see how the frequency
@@ -73,6 +75,7 @@ const Home = () => {
       >
         <h2>Reading Activity (From Amazon Kindle)</h2>
         <div id="reading-heatmap"></div>
+        <div id="reading-legend"></div>
         <p>
           I feel my reading habit comes and goes in waves. Although from september onward
           I've been locked in. That's when I started daily driving the Hisense A9 as my
@@ -125,8 +128,17 @@ const basePlugins = [
   ],
 ]
 
+
 function drawWorkoutHeatmap(cal: CalHeatmap, data: Workout[]) {
-  cal.paint({
+  const plugins = [...basePlugins]
+  plugins.push([
+    Legend,
+    {
+      label: 'Duration in ms',
+      itemSelector: '#workout-legend',
+    },
+  ])
+  const options = {
     ...baseOptions,
     data: {
       source: data,
@@ -137,14 +149,24 @@ function drawWorkoutHeatmap(cal: CalHeatmap, data: Workout[]) {
     itemSelector: '#workout-heatmap',
     scale: {
       color: {
-        domain: [30 * 60 * 100, 3*60 * 60* 100],
+        scheme: "Cool",
+        domain: [1.8e+6, 7.2e+6],
       }
     }
-  }, basePlugins);
+  }
+  cal.paint(options, plugins);
 }
 
 function drawKindleHeatmap(cal: CalHeatmap, data: ReadingData[]) {
-  cal.paint({
+  const plugins = [...basePlugins]
+  plugins.push([
+    Legend,
+    {
+      label: 'Duration in ms',
+      itemSelector: '#reading-legend',
+    },
+  ])
+  const options = {
     ...baseOptions,
     data: {
       source: data,
@@ -153,5 +175,12 @@ function drawKindleHeatmap(cal: CalHeatmap, data: ReadingData[]) {
       groupY: "min"
     },
     itemSelector: '#reading-heatmap',
-  }, basePlugins);
+    scale: {
+      color: {
+        scheme: "Greens",
+        domain: [1e+6, 7.2e+6],
+      }
+    }
+  }
+  cal.paint(options, plugins);
 }
