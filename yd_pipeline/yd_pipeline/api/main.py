@@ -28,7 +28,7 @@ def get_db_connection():
 def get_workout_data(year: Optional[int] = Query(None)):
     conn = get_db_connection()
     cursor = conn.cursor()
-    query = "SELECT * FROM workout_data"
+    query = "SELECT * FROM workout_data_daily"
 
     if year:
         query += " WHERE strftime('%Y', date) = ?"

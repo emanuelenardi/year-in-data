@@ -130,11 +130,16 @@ function drawWorkoutHeatmap(cal: CalHeatmap, data: Workout[]) {
     ...baseOptions,
     data: {
       source: data,
-      x: "Date",
-      y: "Volume",
+      x: "date",
+      y: "workout_duration",
       groupY: "min"
     },
     itemSelector: '#workout-heatmap',
+    scale: {
+      color: {
+        domain: [30 * 60 * 100, 3*60 * 60* 100],
+      }
+    }
   }, basePlugins);
 }
 
