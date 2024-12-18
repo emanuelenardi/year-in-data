@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import styles from "./Home.module.css"
 import { fetchData } from "../../api/axiosClient";
 import CalHeatmap from 'cal-heatmap';
+import CalendarLabel from 'cal-heatmap/plugins/CalendarLabel';
 import 'cal-heatmap/cal-heatmap.css';
-
 
 interface Workout {
   "index": number,
@@ -20,33 +20,24 @@ interface Workout {
   "Volume": number
 }
 
+interface ReadingData {
+  "ASIN": string,
+  "date": string,
+  "total_reading_milliseconds": number
+}
+
 
 const Home = () => {
-  const [, setWorkoutData] = useState<Workout[]>([])
+  const [workoutCal,] = useState(new CalHeatmap())
+  const [readingCal,] = useState(new CalHeatmap())
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const result = await fetchData<Workout[]>("/workout-data");
-        setWorkoutData(result);
-        const cal = new CalHeatmap();
-        cal.paint({
-          domain: {
-            type: "month"
-          },  
-          subDomain: {
-            type: "day"
-          },
-          date: {
-            start: new Date("2024-01-01")
-          },
-          data: {
-            source: result,
-            x: "Date",
-            y: "Volume",
-            groupY: "min"
-          }
-        });
+        const workoutData = await fetchData<Workout[]>("/workout-data");
+        const readingData = await fetchData<ReadingData[]>("/kindle-data");
+        drawWorkoutHeatmap(workoutCal, workoutData)
+        drawKindleHeatmap(readingCal, readingData)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -55,9 +46,9 @@ const Home = () => {
     getData();
   }, [])
 
-  return ( 
+  return (
     <div
-    className={styles.home}
+      className={styles.home}
     >
       <h1>Year in Data</h1>
       <p>
@@ -66,18 +57,96 @@ const Home = () => {
       </p>
 
       <div
-      className={styles.workoutContainer}
+        className={styles.dataSection}
       >
-        <h2>Workout Activity</h2>
-        <div id="cal-heatmap"></div>
+        <h2>Workout Activity (From Strong workout app)</h2>
+        <div id="workout-heatmap"></div>
         <p>
           Damn I fell off. Although I feel like I've still been gaining muscle more now.
           I started my first job near the end of April. You can see how the frequency
           decreases after this point.
         </p>
       </div>
+
+      <div
+        className={styles.dataSection}
+      >
+        <h2>Reading Activity (From Amazon Kindle)</h2>
+        <div id="reading-heatmap"></div>
+        <p>
+          I feel my reading habit comes and goes in waves. Although from september onward
+          I've been locked in. That's when I started daily driving the Hisense A9 as my
+          phone. It has an e-ink screen so it meant I didn't have to go find my kindle 
+          to read.
+        </p>
+      </div>
     </div>
-   );
+  );
 }
- 
 export default Home;
+
+const baseOptions = {
+  domain: {
+    type: "month",
+    gutter: 6,
+    label: {
+      position: 'top'
+    }
+
+  },
+  subDomain: {
+    type: "day",
+    radius: 2,
+    gutter: 3,
+    label: {
+      position: 'left'
+    }
+  },
+  date: {
+    start: new Date("2024-01-01"),
+    locale: {
+      weekStart: 1
+    }
+  },
+  theme: "dark"
+}
+
+const basePlugins = [
+  [
+    CalendarLabel,
+    {
+      position: 'left',
+      key: 'left',
+      text: () => ["", "", 'Mon', '', '', 'Thu', '', '', 'Sun'],
+      textAlign: 'start',
+      width: 30,
+      padding: [0, 0, 0, 0],
+    },
+  ],
+]
+
+function drawWorkoutHeatmap(cal: CalHeatmap, data: Workout[]) {
+  cal.paint({
+    ...baseOptions,
+    data: {
+      source: data,
+      x: "Date",
+      y: "Volume",
+      groupY: "min"
+    },
+    itemSelector: '#workout-heatmap',
+  }, basePlugins);
+}
+
+function drawKindleHeatmap(cal: CalHeatmap, data: ReadingData[]) {
+  cal.paint({
+    ...baseOptions,
+    data: {
+      source: data,
+      x: "date",
+      y: "total_reading_milliseconds",
+      groupY: "min"
+    },
+    itemSelector: '#reading-heatmap',
+  }, basePlugins);
+}
