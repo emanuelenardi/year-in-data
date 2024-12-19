@@ -55,3 +55,19 @@ def get_kindle_data(year: Optional[int] = Query(None)):
     conn.close()
     
     return [dict(row) for row in rows]
+
+@app.get('/github-data', response_model=List[dict])
+def get_github_data(year: Optional[int] = Query(None)):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT * FROM github_data_daily"
+    
+    if year:
+        query += " WHERE strftime('%Y', date) = ?"
+        rows = cursor.execute(query, (str(year),)).fetchall()
+    else:
+        rows = cursor.execute(query).fetchall()
+    
+    conn.close()
+    
+    return [dict(row) for row in rows]
