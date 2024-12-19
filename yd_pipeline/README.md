@@ -15,4 +15,5 @@ Tech | Description
 -|-
 poetry | Python dependency management
 fastapi | Fast web framework
+graphql | Used to fetch info from github api. Allows use of one single query instead of multiple fetches.
 pandas | Data analysis library

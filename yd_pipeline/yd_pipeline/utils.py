@@ -81,3 +81,21 @@ def detect_delimiter(csv_file: BinaryIO) -> str:
     dialect = csv.Sniffer().sniff(csv_file.read(1024))
     csv_file.seek(original_pos)
     return dialect.delimiter
+
+def load_graphql_query(file_path: str) -> str:
+    """
+    Load a GraphQL query from a file.
+
+    Parameters
+    ----------
+    file_path : str
+        The path to the file containing the GraphQL query.
+
+    Returns
+    -------
+    str
+        The GraphQL query as a string.
+    """
+    with open(file_path, 'r') as file:
+        query = file.read()
+    return query
