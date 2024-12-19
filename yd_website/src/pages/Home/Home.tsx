@@ -53,8 +53,8 @@ const Home = () => {
     >
       <h1>Year in Data</h1>
       <p>
-        2024 is over, it was meh. Here is what I was doing this year represented through
-        a yearly heatmap.
+        2024 is over, 2025 is here. Here is what I was doing this year represented through
+        yearly heatmaps.
       </p>
 
       <div
@@ -134,7 +134,7 @@ function drawWorkoutHeatmap(cal: CalHeatmap, data: Workout[]) {
   plugins.push([
     Legend,
     {
-      label: 'Duration in ms',
+      label: 'Duration in minutes',
       itemSelector: '#workout-legend',
     },
   ])
@@ -143,14 +143,14 @@ function drawWorkoutHeatmap(cal: CalHeatmap, data: Workout[]) {
     data: {
       source: data,
       x: "date",
-      y: "workout_duration",
+      y: "workout_duration_minutes",
       groupY: "min"
     },
     itemSelector: '#workout-heatmap',
     scale: {
       color: {
-        scheme: "Cool",
-        domain: [1.8e+6, 7.2e+6],
+        scheme: "Blues",
+        domain: [0, 100],
       }
     }
   }
@@ -162,7 +162,7 @@ function drawKindleHeatmap(cal: CalHeatmap, data: ReadingData[]) {
   plugins.push([
     Legend,
     {
-      label: 'Duration in ms',
+      label: 'Duration in minutes',
       itemSelector: '#reading-legend',
     },
   ])
@@ -171,14 +171,14 @@ function drawKindleHeatmap(cal: CalHeatmap, data: ReadingData[]) {
     data: {
       source: data,
       x: "date",
-      y: "total_reading_milliseconds",
+      y: "total_reading_minutes",
       groupY: "min"
     },
     itemSelector: '#reading-heatmap',
     scale: {
       color: {
-        scheme: "Greens",
-        domain: [1e+6, 7.2e+6],
+        scheme: "Oranges",
+        domain: [0, 150],
       }
     }
   }
