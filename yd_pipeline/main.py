@@ -1,8 +1,6 @@
-from yd_pipeline.process_data import (
-    process_strong_data,
-    process_kindle_data,
-    process_github_data
-)
+from yd_pipeline.process_data.strong import process_strong_data
+from yd_pipeline.process_data.kindle import process_kindle_data
+from yd_pipeline.process_data.github import process_github_data
 from pathlib import Path
 import os
 from dotenv import load_dotenv
