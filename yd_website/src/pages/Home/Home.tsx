@@ -7,7 +7,10 @@ import CalHeatmap from 'cal-heatmap';
 import CalendarLabel from 'cal-heatmap/plugins/CalendarLabel';
 // @ts-expect-error cal-heatmap library don't have declration files :(
 import Legend from 'cal-heatmap/plugins/Legend';
+// @ts-expect-error cal-heatmap library don't have declration files :(
+import Tooltip from 'cal-heatmap/plugins/Tooltip';
 import 'cal-heatmap/cal-heatmap.css';
+import { Dayjs } from "dayjs";
 
 interface Workout {
   "index": number,
@@ -153,6 +156,18 @@ const basePlugins = [
   ],
 ]
 
+function createTooltip(unit: string) {
+  return [
+    Tooltip,
+    {
+      enabled: true,
+      text: function (_timestamp: string, value: string, dayjsDate: Dayjs ) {
+        return `${value}  ${unit} --- ${dayjsDate.toDate().toDateString()}`;
+      }
+    }
+  ]
+}
+
 
 function drawWorkoutHeatmap(cal: CalHeatmap, data: Workout[]) {
   const plugins = [...basePlugins]
@@ -163,6 +178,7 @@ function drawWorkoutHeatmap(cal: CalHeatmap, data: Workout[]) {
       itemSelector: '#workout-legend',
     },
   ])
+  plugins.push(createTooltip("minutes"))
   const options = {
     ...baseOptions,
     data: {
@@ -175,7 +191,7 @@ function drawWorkoutHeatmap(cal: CalHeatmap, data: Workout[]) {
     scale: {
       color: {
         scheme: "YlGnBu",
-        domain: [0, 100],
+        domain: [-10, 100],
       }
     }
   }
@@ -191,6 +207,7 @@ function drawKindleHeatmap(cal: CalHeatmap, data: ReadingData[]) {
       itemSelector: '#reading-legend',
     },
   ])
+  plugins.push(createTooltip("minutes"))
   const options = {
     ...baseOptions,
     data: {
@@ -203,7 +220,7 @@ function drawKindleHeatmap(cal: CalHeatmap, data: ReadingData[]) {
     scale: {
       color: {
         scheme: "YlOrBr",
-        domain: [0, 150],
+        domain: [-50, 150],
       }
     }
   }
@@ -219,6 +236,7 @@ function drawGithubHeatmap(cal: CalHeatmap, data: GithubData[]) {
       itemSelector: '#github-legend',
     },
   ])
+  plugins.push(createTooltip("commits"))
   const options = {
     ...baseOptions,
     data: {
@@ -231,7 +249,7 @@ function drawGithubHeatmap(cal: CalHeatmap, data: GithubData[]) {
     scale: {
       color: {
         scheme: "Greens",
-        domain: [0, 10],
+        domain: [-10, 20],
       }
     }
   }
