@@ -3,42 +3,8 @@ import styles from "./Home.module.css"
 import { fetchData } from "../../api/axiosClient";
 // @ts-expect-error cal-heatmap library don't have declration files :(
 import CalHeatmap from 'cal-heatmap';
-// @ts-expect-error cal-heatmap library don't have declration files :(
-import CalendarLabel from 'cal-heatmap/plugins/CalendarLabel';
-// @ts-expect-error cal-heatmap library don't have declration files :(
-import Legend from 'cal-heatmap/plugins/Legend';
-// @ts-expect-error cal-heatmap library don't have declration files :(
-import Tooltip from 'cal-heatmap/plugins/Tooltip';
-import 'cal-heatmap/cal-heatmap.css';
-import { Dayjs } from "dayjs";
-
-interface Workout {
-  "index": number,
-  "Date": string,
-  "Workout Name": string,
-  "Exercise Name": string,
-  "Set Order": number,
-  "Weight": number,
-  "Reps": number,
-  "Distance": number,
-  "Seconds": number,
-  "Notes": string,
-  "Workout Duration": number,
-  "Volume": number
-}
-
-interface ReadingData {
-  "ASIN": string,
-  "date": string,
-  "total_reading_milliseconds": number
-}
-
-interface GithubData {
-  "date": string,
-  "total_commits": string,
-  "repository_name": string
-}
-
+import { GithubData, ReadingData, WorkoutData } from "../../types/dataTypes";
+import { drawGithubHeatmap, drawKindleHeatmap, drawWorkoutHeatmap } from "./heatmapUtils";
 
 const Home = () => {
   const [workoutCal,] = useState(new CalHeatmap())
@@ -48,7 +14,7 @@ const Home = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const workoutData = await fetchData<Workout[]>("/workout-data");
+        const workoutData = await fetchData<WorkoutData[]>("/workout-data");
         const readingData = await fetchData<ReadingData[]>("/kindle-data");
         const githubData = await fetchData<GithubData[]>("/github-data");
         drawWorkoutHeatmap(workoutCal, workoutData)
@@ -114,144 +80,5 @@ const Home = () => {
     </div>
   );
 }
+
 export default Home;
-
-const baseOptions = {
-  domain: {
-    type: "month",
-    gutter: 6,
-    label: {
-      position: 'top'
-    }
-
-  },
-  subDomain: {
-    type: "day",
-    radius: 2,
-    gutter: 3,
-    label: {
-      position: 'left'
-    }
-  },
-  date: {
-    start: new Date("2024-01-01"),
-    locale: {
-      weekStart: 1
-    }
-  },
-  theme: "dark"
-}
-
-const basePlugins = [
-  [
-    CalendarLabel,
-    {
-      position: 'left',
-      key: 'left',
-      text: () => ["", "", 'Mon', '', '', 'Thu', '', '', 'Sun'],
-      textAlign: 'start',
-      width: 30,
-      padding: [0, 0, 0, 0],
-    },
-  ],
-]
-
-function createTooltip(unit: string) {
-  return [
-    Tooltip,
-    {
-      enabled: true,
-      text: function (_timestamp: string, value: string, dayjsDate: Dayjs ) {
-        return `${value}  ${unit} --- ${dayjsDate.toDate().toDateString()}`;
-      }
-    }
-  ]
-}
-
-
-function drawWorkoutHeatmap(cal: CalHeatmap, data: Workout[]) {
-  const plugins = [...basePlugins]
-  plugins.push([
-    Legend,
-    {
-      label: 'Duration in minutes',
-      itemSelector: '#workout-legend',
-    },
-  ])
-  plugins.push(createTooltip("minutes"))
-  const options = {
-    ...baseOptions,
-    data: {
-      source: data,
-      x: "date",
-      y: "workout_duration_minutes",
-      groupY: "min"
-    },
-    itemSelector: '#workout-heatmap',
-    scale: {
-      color: {
-        scheme: "YlGnBu",
-        domain: [-10, 100],
-      }
-    }
-  }
-  cal.paint(options, plugins);
-}
-
-function drawKindleHeatmap(cal: CalHeatmap, data: ReadingData[]) {
-  const plugins = [...basePlugins]
-  plugins.push([
-    Legend,
-    {
-      label: 'Duration in minutes',
-      itemSelector: '#reading-legend',
-    },
-  ])
-  plugins.push(createTooltip("minutes"))
-  const options = {
-    ...baseOptions,
-    data: {
-      source: data,
-      x: "date",
-      y: "total_reading_minutes",
-      groupY: "min"
-    },
-    itemSelector: '#reading-heatmap',
-    scale: {
-      color: {
-        scheme: "YlOrBr",
-        domain: [-50, 150],
-      }
-    }
-  }
-  cal.paint(options, plugins);
-}
-
-function drawGithubHeatmap(cal: CalHeatmap, data: GithubData[]) {
-  const plugins = [...basePlugins]
-  plugins.push([
-    Legend,
-    {
-      label: 'Number of commits',
-      itemSelector: '#github-legend',
-    },
-  ])
-  plugins.push(createTooltip("commits"))
-  const options = {
-    ...baseOptions,
-    data: {
-      source: data,
-      x: "date",
-      y: "total_commits",
-      groupY: "min"
-    },
-    itemSelector: '#github-heatmap',
-    scale: {
-      color: {
-        scheme: "Greens",
-        domain: [-10, 20],
-      }
-    }
-  }
-  cal.paint(options, plugins);
-}
