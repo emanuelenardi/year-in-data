@@ -54,7 +54,8 @@ def process_strong_data(csv_file: BinaryIO):
     strong_df = strong_df.rename(columns=rename_map)
     
     # Parse durations to milliseconds
-    strong_df["workout_duration"] = strong_df["workout_duration"].apply(parse_duration)
+    strong_df["workout_duration_milliseconds"] = strong_df["workout_duration"].apply(parse_duration)
+    strong_df.drop(columns=["workout_duration"])
     
     # Calculate volume for each workout
     strong_df["volume"] = strong_df["weight"] * strong_df["reps"]
@@ -64,7 +65,7 @@ def process_strong_data(csv_file: BinaryIO):
     strong_df.to_sql('workout_data_fine_grain', connection, if_exists='replace')
 
     # For daily info
-    daily_columns = ["date", "workout_name", "workout_duration", "volume"]
+    daily_columns = ["date", "workout_name", "workout_duration_milliseconds", "volume"]
     daily_strong_df = strong_df[daily_columns]
     daily_strong_df["date"] = pd.to_datetime(
         daily_strong_df["date"],
@@ -73,10 +74,15 @@ def process_strong_data(csv_file: BinaryIO):
     daily_strong_df = (daily_strong_df
         .groupby(["date", "workout_name"])
         .aggregate({
-            "workout_duration": "min",
+            "workout_duration_milliseconds": "min",
             "volume": "sum"
         })
     )
+    daily_strong_df["workout_duration_minutes"] = (
+        daily_strong_df["workout_duration_milliseconds"]
+        .apply(lambda x : x /(60 * 1000))
+    )
+    daily_strong_df = daily_strong_df.drop(columns=["workout_duration_milliseconds"])
     daily_strong_df.to_sql("workout_data_daily", connection, if_exists='replace')
     
     
@@ -126,5 +132,11 @@ def process_kindle_data(csv_file: BinaryIO):
     ).dt.date
     daily_kindle_df = daily_kindle_df[["ASIN", "date", "total_reading_milliseconds"]]
     daily_kindle_df = daily_kindle_df.groupby(["ASIN", "date"]).sum()
+    daily_kindle_df["total_reading_minutes"] = (
+        daily_kindle_df["total_reading_milliseconds"]
+        .apply(lambda x : round(x /(60 * 1000)))
+    )
+    daily_kindle_df = daily_kindle_df.drop(columns=["total_reading_milliseconds"])
+    daily_kindle_df = daily_kindle_df[daily_kindle_df["total_reading_minutes"] != 0]
     daily_kindle_df.to_sql('kindle_data_daily', connection, if_exists='replace')
     
