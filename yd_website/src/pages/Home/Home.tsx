@@ -30,18 +30,27 @@ interface ReadingData {
   "total_reading_milliseconds": number
 }
 
+interface GithubData {
+  "date": string,
+  "total_commits": string,
+  "repository_name": string
+}
+
 
 const Home = () => {
   const [workoutCal,] = useState(new CalHeatmap())
   const [readingCal,] = useState(new CalHeatmap())
+  const [githubCal,] = useState(new CalHeatmap())
 
   useEffect(() => {
     const getData = async () => {
       try {
         const workoutData = await fetchData<Workout[]>("/workout-data");
         const readingData = await fetchData<ReadingData[]>("/kindle-data");
+        const githubData = await fetchData<GithubData[]>("/github-data");
         drawWorkoutHeatmap(workoutCal, workoutData)
         drawKindleHeatmap(readingCal, readingData)
+        drawGithubHeatmap(githubCal, githubData)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -84,6 +93,19 @@ const Home = () => {
           I've been locked in. That's when I started daily driving the Hisense A9 as my
           phone. It has an e-ink screen so it meant I didn't have to go find my kindle 
           to read.
+        </p>
+      </div>
+
+      <div
+        className={styles.dataSection}
+      >
+        <h2>Github Activity (From Gitlab)</h2>
+        <div id="github-heatmap"></div>
+        <div id="github-legend"></div>
+        <p>
+          2024 was the year I learned how to code (properly). I learned react, spring boot,
+          typescript, vite, rest apis, graphql queries and so much moree. Although having
+          done all that I was not able to land a single web dev job offer 💀.
         </p>
       </div>
     </div>
@@ -182,6 +204,34 @@ function drawKindleHeatmap(cal: CalHeatmap, data: ReadingData[]) {
       color: {
         scheme: "YlOrBr",
         domain: [0, 150],
+      }
+    }
+  }
+  cal.paint(options, plugins);
+}
+
+function drawGithubHeatmap(cal: CalHeatmap, data: GithubData[]) {
+  const plugins = [...basePlugins]
+  plugins.push([
+    Legend,
+    {
+      label: 'Number of commits',
+      itemSelector: '#github-legend',
+    },
+  ])
+  const options = {
+    ...baseOptions,
+    data: {
+      source: data,
+      x: "date",
+      y: "total_commits",
+      groupY: "min"
+    },
+    itemSelector: '#github-heatmap',
+    scale: {
+      color: {
+        scheme: "Greens",
+        domain: [0, 10],
       }
     }
   }
