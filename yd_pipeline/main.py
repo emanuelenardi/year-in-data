@@ -1,6 +1,7 @@
 from yd_pipeline.process_data.strong import process_strong_data
 from yd_pipeline.process_data.kindle import process_kindle_data
 from yd_pipeline.process_data.github import process_github_data
+from yd_pipeline.process_data.fitbit import process_sleep_data
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -34,3 +35,12 @@ with open(kindle_data_filepath) as kindle_csv:
 # I WILL NOT COMMIT MY GITHUB TOKEN TO GIT.
 load_dotenv()
 process_github_data("aebel-shajan", os.getenv("GITHUB_TOKEN"))
+
+# ETL fitbit data
+fitbit_data_folderpath = (
+    data_file_path 
+    / "Takeout" 
+    / "Fitbit" 
+    / "Global Export Data" 
+)
+process_sleep_data(fitbit_data_folderpath)
