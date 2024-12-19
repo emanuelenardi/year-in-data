@@ -57,7 +57,7 @@ function createTooltip(unit: string) {
     {
       enabled: true,
       text: function (_timestamp: string, value: string, dayjsDate: Dayjs ) {
-        return `${value}  ${unit} --- ${dayjsDate.toDate().toDateString()}`;
+        return `${value ? value : 0}  ${unit} || ${dayjsDate.toDate().toDateString()}`;
       }
     }
   ]
