@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import styles from "./Home.module.css"
 import { fetchData } from "../../api/axiosClient";
+// @ts-expect-error cal-heatmap library don't have declration files :(
 import CalHeatmap from 'cal-heatmap';
+// @ts-expect-error cal-heatmap library don't have declration files :(
 import CalendarLabel from 'cal-heatmap/plugins/CalendarLabel';
+// @ts-expect-error cal-heatmap library don't have declration files :(
 import Legend from 'cal-heatmap/plugins/Legend';
 import 'cal-heatmap/cal-heatmap.css';
 
