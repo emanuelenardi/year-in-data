@@ -63,6 +63,14 @@ def check_columns_exist(df: pd.DataFrame, columns: list[str]) -> bool:
     return set(columns).issubset(df.columns)
 
 
+def validate_columns(df: pd.DataFrame, columns_to_validate: list[str]) -> None:
+    if not set(df.columns).issubset(df.columns):
+        raise ValueError(
+            "df provided does not contain required columns!\n"
+            f"\t* df columns: {list(df.columns)}\n"
+            f"\t* Required columns: {columns_to_validate}"
+        )
+
 def detect_delimiter(csv_file: BinaryIO) -> str:
     """
     Detect the delimiter used in a CSV file.

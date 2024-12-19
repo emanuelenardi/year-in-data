@@ -2,6 +2,7 @@ import pandas as pd
 import sqlite3
 from yd_pipeline.utils import (
     check_columns_exist,
+    validate_columns,
     parse_duration,
     detect_delimiter,
     load_graphql_query
@@ -266,5 +267,18 @@ def process_github_data(github_username: str, github_token: str):
         full_contribution_list.extend(unpack_contributions_dict(repo_contributions) )
 
     github_activity_df = pd.DataFrame(full_contribution_list)
+    validate_columns(
+        github_activity_df, 
+        [
+            "commitCount",
+            "occurredAt",
+            "repository_name"
+        ]
+    )
+    github_activity_df = github_activity_df.rename(columns={
+        "commitCount": "total_commits",
+        "occurredAt": "date",
+        "repository_name": "repository_name"
+    })
     connection = sqlite3.connect('data/output/year_in_data.db')
     github_activity_df.to_sql('github_data_daily', connection, if_exists='replace')
