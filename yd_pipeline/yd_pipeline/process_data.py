@@ -280,5 +280,9 @@ def process_github_data(github_username: str, github_token: str):
         "occurredAt": "date",
         "repository_name": "repository_name"
     })
+    github_activity_df["date"] = pd.to_datetime(
+        github_activity_df["date"],
+        format="ISO8601"
+    ).dt.date
     connection = sqlite3.connect('data/output/year_in_data.db')
     github_activity_df.to_sql('github_data_daily', connection, if_exists='replace')
