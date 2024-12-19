@@ -152,7 +152,7 @@ function drawWorkoutHeatmap(cal: CalHeatmap, data: Workout[]) {
     itemSelector: '#workout-heatmap',
     scale: {
       color: {
-        scheme: "Blues",
+        scheme: "YlGnBu",
         domain: [0, 100],
       }
     }
@@ -180,7 +180,7 @@ function drawKindleHeatmap(cal: CalHeatmap, data: ReadingData[]) {
     itemSelector: '#reading-heatmap',
     scale: {
       color: {
-        scheme: "Oranges",
+        scheme: "YlOrBr",
         domain: [0, 150],
       }
     }
