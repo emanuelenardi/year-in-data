@@ -4,7 +4,6 @@ import pandas as pd
 import sqlite3
 from yd_pipeline.utils import validate_columns
 
-
 def extract_sleep_data(folder_path: str):
     """Extract sleep data from files from the folder path. The files have the name format
     "sleep-YYYY-MM-DD.json".
@@ -75,6 +74,17 @@ def transform_sleep_data(sleep_df: pd.DataFrame):
         .apply(lambda x: round(x /(1000 * 60 * 60 ), 2))
     )
     sleep_df = sleep_df.drop(columns=["total_duration"])
+    sleep_df.loc[:, "date"] = pd.to_datetime(sleep_df["date"]).dt.date
+    sleep_df.loc[:, "start_time"] = pd.to_datetime(sleep_df["start_time"]).dt.time
+    sleep_df.loc[:, "end_time"] = pd.to_datetime(sleep_df["end_time"]).dt.time
+    sleep_df = (sleep_df
+        .groupby(["date"])
+        .aggregate({
+            "start_time": "min",
+            "end_time": "max",
+            "total_duration_hours": "sum"
+        })
+    )
     connection = sqlite3.connect('data/output/year_in_data.db')
     sleep_df.to_sql('fitbit_sleep_data_processed', connection, if_exists="replace")
     
