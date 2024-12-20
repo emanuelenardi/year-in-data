@@ -54,7 +54,7 @@ function createTooltip(unit: string) {
     Tooltip,
     {
       enabled: true,
-      text: function (_timestamp: string, value: string, dayjsDate: Dayjs ) {
+      text: function (_timestamp: string, value: string, dayjsDate: Dayjs) {
         return `${value ? value : 0}  ${unit} || ${dayjsDate.toDate().toDateString()}`;
       }
     }
@@ -77,7 +77,7 @@ function drawHeatmap({
   valueCol: string,
   name: string,
   legendLabel: string,
-  color: {range?: string[]| unknown, scheme?: string, domain: number[]},
+  color: { range?: string[] | unknown, scheme?: string, domain: number[] },
   units: string
 }) {
   const plugins = [...basePlugins]
@@ -95,7 +95,7 @@ function drawHeatmap({
       source: data,
       x: dateCol,
       y: valueCol,
-      groupY: "min"
+      groupY: "sum"
     },
     itemSelector: `#${name}-heatmap`,
     scale: {
@@ -105,6 +105,7 @@ function drawHeatmap({
       }
     }
   }
+  cal.destroy()
   cal.paint(options, plugins);
 }
 
@@ -137,11 +138,11 @@ export function drawWorkoutHeatmap(cal: CalHeatmap, data: WorkoutData[]) {
   cal.paint(options, plugins);
 }
 
-export function drawKindleHeatmap(cal: CalHeatmap, responseData:  DataResponseType<ReadingData[]>) {
+export function drawKindleHeatmap(cal: CalHeatmap, data: ReadingData[]) {
   drawHeatmap(
     {
       cal: cal,
-      data: responseData["data"],
+      data: data,
       dateCol: "date",
       valueCol: "total_reading_minutes",
       name: "reading",
@@ -194,7 +195,7 @@ export function drawSleepHeatmap(cal: CalHeatmap, responseData: DataResponseType
       name: "sleep",
       legendLabel: "Hours slept",
       color: {
-        range:  d3.schemeRdBu[5],
+        range: d3.schemeRdBu[5],
         domain: [6, 7, 8, 9]
       },
       units: "hours"
