@@ -41,51 +41,15 @@ def get_annual_table_data(table: str, year: Optional[int]):
 
 @app.get('/workout-data', response_model=List[dict])
 def get_workout_data(year: Optional[int] = Query(None)):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    query = "SELECT * FROM workout_data_daily"
-
-    if year:
-        query += " WHERE strftime('%Y', date) = ?"
-        rows = cursor.execute(query, (str(year),)).fetchall()
-    else:
-        rows = cursor.execute(query).fetchall()
-    
-    conn.close()
-    
-    return [dict(row) for row in rows]
+    return get_annual_table_data("workout_data_daily", year)
 
 @app.get('/kindle-data', response_model=List[dict])
 def get_kindle_data(year: Optional[int] = Query(None)):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    query = "SELECT * FROM kindle_data_daily"
-    
-    if year:
-        query += " WHERE strftime('%Y', date) = ?"
-        rows = cursor.execute(query, (str(year),)).fetchall()
-    else:
-        rows = cursor.execute(query).fetchall()
-    
-    conn.close()
-    
-    return [dict(row) for row in rows]
+    return get_annual_table_data("kindle_data_daily", year)
 
 @app.get('/github-data', response_model=List[dict])
 def get_github_data(year: Optional[int] = Query(None)):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    query = "SELECT * FROM github_data_daily"
-    
-    if year:
-        query += " WHERE strftime('%Y', date) = ?"
-        rows = cursor.execute(query, (str(year),)).fetchall()
-    else:
-        rows = cursor.execute(query).fetchall()
-    
-    conn.close()
-    
-    return [dict(row) for row in rows]
+    return get_annual_table_data("github_data_daily", year)
 
 @app.get("/sleep-data", response_model=List[dict])
 def get_sleep_data(year: Optional[int] = Query(None)):
