@@ -7,6 +7,7 @@ import Legend from 'cal-heatmap/plugins/Legend';
 // @ts-expect-error cal-heatmap library don't have declration files :(
 import Tooltip from 'cal-heatmap/plugins/Tooltip';
 import 'cal-heatmap/cal-heatmap.css';
+import * as d3 from "d3-scale-chromatic"
 import { Dayjs } from "dayjs";
 import { GithubData, ReadingData, SleepData, WorkoutData } from '../../types/dataTypes';
 
@@ -30,9 +31,6 @@ const baseOptions = {
   },
   date: {
     start: new Date("2024-01-01"),
-    locale: {
-      weekStart: 1
-    }
   },
   theme: "dark"
 }
@@ -43,7 +41,7 @@ const basePlugins = [
     {
       position: 'left',
       key: 'left',
-      text: () => ["", "", 'Mon', '', '', 'Thu', '', '', 'Sun'],
+      text: () => ["", "", 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
       textAlign: 'start',
       width: 30,
       padding: [0, 0, 0, 0],
@@ -79,7 +77,7 @@ function drawHeatmap({
   valueCol: string,
   name: string,
   legendLabel: string,
-  color: {scheme: string, domain: [number, number]},
+  color: {range?: string[]| unknown, scheme?: string, domain: number[]},
   units: string
 }) {
   const plugins = [...basePlugins]
@@ -101,7 +99,10 @@ function drawHeatmap({
     },
     itemSelector: `#${name}-heatmap`,
     scale: {
-      color: color
+      color: {
+        ...color,
+        type: "threshold"
+      }
     }
   }
   cal.paint(options, plugins);
@@ -204,8 +205,8 @@ export function drawSleepHeatmap(cal: CalHeatmap, data: SleepData[]) {
       name: "sleep",
       legendLabel: "Hours slept",
       color: {
-        scheme: "Purples",
-        domain: [3, 10]
+        range:  d3.schemeRdBu[5],
+        domain: [6, 7, 8, 9]
       },
       units: "hours"
     }
