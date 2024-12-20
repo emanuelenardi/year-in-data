@@ -16,3 +16,10 @@ export interface GithubData {
   "repository_name": string
   "total_commits": string,
 }
+
+export interface SleepData {
+  "data": string,
+  "start_time": string,
+  "end_time": string,
+  "total_duration_hours": number
+}

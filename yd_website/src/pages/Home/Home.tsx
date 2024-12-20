@@ -3,13 +3,14 @@ import styles from "./Home.module.css"
 import { fetchData } from "../../api/axiosClient";
 // @ts-expect-error cal-heatmap library don't have declration files :(
 import CalHeatmap from 'cal-heatmap';
-import { GithubData, ReadingData, WorkoutData } from "../../types/dataTypes";
-import { drawGithubHeatmap, drawKindleHeatmap, drawWorkoutHeatmap } from "./heatmapUtils";
+import { GithubData, ReadingData, SleepData, WorkoutData } from "../../types/dataTypes";
+import { drawGithubHeatmap, drawKindleHeatmap, drawSleepHeatmap, drawWorkoutHeatmap } from "./heatmapUtils";
 
 const Home = () => {
   const [workoutCal,] = useState(new CalHeatmap())
   const [readingCal,] = useState(new CalHeatmap())
   const [githubCal,] = useState(new CalHeatmap())
+  const [sleepCal,] = useState(new CalHeatmap())
 
   useEffect(() => {
     const getData = async () => {
@@ -17,9 +18,11 @@ const Home = () => {
         const workoutData = await fetchData<WorkoutData[]>("/workout-data");
         const readingData = await fetchData<ReadingData[]>("/kindle-data");
         const githubData = await fetchData<GithubData[]>("/github-data");
+        const sleepData = await fetchData<SleepData[]>("/sleep-data");
         drawWorkoutHeatmap(workoutCal, workoutData)
         drawKindleHeatmap(readingCal, readingData)
         drawGithubHeatmap(githubCal, githubData)
+        drawSleepHeatmap(sleepCal, sleepData)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -75,6 +78,19 @@ const Home = () => {
           2024 was the year I learned how to code (properly). I learned react, spring boot,
           typescript, vite, rest apis, graphql queries and so much moree. Although having
           done all that I was not able to land a single web dev job offer 💀.
+        </p>
+      </div>
+
+      <div
+        className={styles.dataSection}
+      >
+        <h2>Sleep Activity (From Fitbit)</h2>
+        <div id="sleep-heatmap"></div>
+        <div id="sleep-legend"></div>
+        <p>
+          Sleep was much better than expected. Especially recently in December, I am 
+          getting days when I sleep for 10 hours :0. Lol you can see when I lost my Fitbit
+          in February. I am also surprised at how often I have my fitbit on.
         </p>
       </div>
     </div>

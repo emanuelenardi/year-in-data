@@ -8,7 +8,7 @@ import Legend from 'cal-heatmap/plugins/Legend';
 import Tooltip from 'cal-heatmap/plugins/Tooltip';
 import 'cal-heatmap/cal-heatmap.css';
 import { Dayjs } from "dayjs";
-import { GithubData, ReadingData, WorkoutData } from '../../types/dataTypes';
+import { GithubData, ReadingData, SleepData, WorkoutData } from '../../types/dataTypes';
 
 
 const baseOptions = {
@@ -63,6 +63,49 @@ function createTooltip(unit: string) {
   ]
 }
 
+function drawHeatmap({
+  cal,
+  data,
+  dateCol,
+  valueCol,
+  name,
+  legendLabel,
+  color,
+  units
+}: {
+  cal: CalHeatmap,
+  data: unknown[],
+  dateCol: string,
+  valueCol: string,
+  name: string,
+  legendLabel: string,
+  color: {scheme: string, domain: [number, number]},
+  units: string
+}) {
+  const plugins = [...basePlugins]
+  plugins.push([
+    Legend,
+    {
+      label: legendLabel,
+      itemSelector: `#${name}-legend`,
+    },
+  ])
+  plugins.push(createTooltip(units))
+  const options = {
+    ...baseOptions,
+    data: {
+      source: data,
+      x: dateCol,
+      y: valueCol,
+      groupY: "min"
+    },
+    itemSelector: `#${name}-heatmap`,
+    scale: {
+      color: color
+    }
+  }
+  cal.paint(options, plugins);
+}
 
 export function drawWorkoutHeatmap(cal: CalHeatmap, data: WorkoutData[]) {
   const plugins = [...basePlugins]
@@ -149,4 +192,22 @@ export function drawGithubHeatmap(cal: CalHeatmap, data: GithubData[]) {
     }
   }
   cal.paint(options, plugins);
+}
+
+export function drawSleepHeatmap(cal: CalHeatmap, data: SleepData[]) {
+  drawHeatmap(
+    {
+      cal: cal,
+      data: data,
+      dateCol: "date",
+      valueCol: "total_duration_hours",
+      name: "sleep",
+      legendLabel: "Hours slept",
+      color: {
+        scheme: "Purples",
+        domain: [3, 10]
+      },
+      units: "hours"
+    }
+  )
 }
