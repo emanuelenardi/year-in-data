@@ -5,22 +5,25 @@ import { fetchData } from "../../api/axiosClient";
 import CalHeatmap from 'cal-heatmap';
 import { DataResponseType, GithubData, ReadingData, SleepData, WorkoutData } from "../../types/dataTypes";
 import { drawGithubHeatmap, drawKindleHeatmap, drawSleepHeatmap, drawWorkoutHeatmap } from "./heatmapUtils";
+import BookCarousel from "../../components/BookCarousel/BookCarousel";
 
 const Home = () => {
   const [workoutCal,] = useState(new CalHeatmap())
   const [readingCal,] = useState(new CalHeatmap())
   const [githubCal,] = useState(new CalHeatmap())
   const [sleepCal,] = useState(new CalHeatmap())
+  const [books, setBooks] = useState<string[]>([])
 
   useEffect(() => {
     const getData = async () => {
       try {
         const workoutData = await fetchData<DataResponseType<WorkoutData[]>>("/workout-data");
-        const readingData = await fetchData<DataResponseType<ReadingData[]>>("/kindle-data");
+        const readingData = await fetchData<DataResponseType<ReadingData[]>>("/kindle-data?year=2024");
         const githubData = await fetchData<DataResponseType<GithubData[]>>("/github-data");
         const sleepData = await fetchData<DataResponseType<SleepData[]>>("/sleep-data");
         drawWorkoutHeatmap(workoutCal, workoutData["data"])
-        drawKindleHeatmap(readingCal, readingData["data"])
+        drawKindleHeatmap(readingCal, readingData)
+        setBooks(Object.keys(readingData["distinct_categories"]))
         drawGithubHeatmap(githubCal, githubData["data"])
         drawSleepHeatmap(sleepCal, sleepData)
       } catch (error) {
@@ -60,6 +63,7 @@ const Home = () => {
         <h2>Reading Activity (From Amazon Kindle)</h2>
         <div id="reading-heatmap"></div>
         <div id="reading-legend"></div>
+        <BookCarousel asinCodes={books} />
         <p>
           I feel my reading habit comes and goes in waves. Although from september onward
           I've been locked in. That's when I started daily driving the Hisense A9 as my
