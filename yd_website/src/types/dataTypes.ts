@@ -12,7 +12,7 @@ export interface WorkoutData {
 
 export interface ReadingData {
   "date": string,
-  "total_reading_milliseconds": number
+  "total_reading_minutes": number
   "ASIN": string,
 }
 
