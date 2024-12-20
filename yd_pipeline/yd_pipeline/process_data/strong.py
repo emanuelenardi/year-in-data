@@ -68,7 +68,7 @@ def process_strong_data(csv_file: BinaryIO):
     # For daily info
     daily_columns = ["date", "workout_name", "workout_duration_milliseconds", "volume"]
     daily_strong_df = strong_df[daily_columns]
-    daily_strong_df["date"] = pd.to_datetime(
+    daily_strong_df.loc[:,"date"] = pd.to_datetime(
         daily_strong_df["date"],
         format="ISO8601"
     ).dt.date
