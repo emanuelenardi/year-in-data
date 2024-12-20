@@ -24,6 +24,21 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+def get_annual_table_data(table: str, year: Optional[int]):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = f"SELECT * FROM {table}"
+    
+    if year:
+        query += " WHERE strftime('%Y', date) = ?"
+        rows = cursor.execute(query, (str(year),)).fetchall()
+    else:
+        rows = cursor.execute(query).fetchall()
+    
+    conn.close()
+    
+    return [dict(row) for row in rows]
+
 @app.get('/workout-data', response_model=List[dict])
 def get_workout_data(year: Optional[int] = Query(None)):
     conn = get_db_connection()
@@ -71,3 +86,7 @@ def get_github_data(year: Optional[int] = Query(None)):
     conn.close()
     
     return [dict(row) for row in rows]
+
+@app.get("/sleep-data", response_model=List[dict])
+def get_sleep_data(year: Optional[int] = Query(None)):
+    return get_annual_table_data("fitbit_sleep_data_processed", year)
