@@ -137,33 +137,22 @@ export function drawWorkoutHeatmap(cal: CalHeatmap, data: WorkoutData[]) {
   cal.paint(options, plugins);
 }
 
-export function drawKindleHeatmap(cal: CalHeatmap, data: ReadingData[]) {
-  const plugins = [...basePlugins]
-  plugins.push([
-    Legend,
+export function drawKindleHeatmap(cal: CalHeatmap, responseData:  DataResponseType<ReadingData[]>) {
+  drawHeatmap(
     {
-      label: 'Duration in minutes',
-      itemSelector: '#reading-legend',
-    },
-  ])
-  plugins.push(createTooltip("minutes"))
-  const options = {
-    ...baseOptions,
-    data: {
-      source: data,
-      x: "date",
-      y: "total_reading_minutes",
-      groupY: "min"
-    },
-    itemSelector: '#reading-heatmap',
-    scale: {
+      cal: cal,
+      data: responseData["data"],
+      dateCol: "date",
+      valueCol: "total_reading_minutes",
+      name: "reading",
+      legendLabel: "Minutes read",
       color: {
         scheme: "YlOrBr",
-        domain: [-50, 150],
-      }
+        domain: [20, 40, 60, 80],
+      },
+      units: "minutes"
     }
-  }
-  cal.paint(options, plugins);
+  )
 }
 
 export function drawGithubHeatmap(cal: CalHeatmap, data: GithubData[]) {
