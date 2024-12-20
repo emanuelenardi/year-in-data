@@ -1,3 +1,8 @@
+export interface DataResponseType<T> {
+  "distinct_categories": { [key: string]: number },
+  "data": T
+}
+
 export interface WorkoutData {
   "date": string,
   "Workout_name": string,

@@ -3,7 +3,7 @@ import styles from "./Home.module.css"
 import { fetchData } from "../../api/axiosClient";
 // @ts-expect-error cal-heatmap library don't have declration files :(
 import CalHeatmap from 'cal-heatmap';
-import { GithubData, ReadingData, SleepData, WorkoutData } from "../../types/dataTypes";
+import { DataResponseType, GithubData, ReadingData, SleepData, WorkoutData } from "../../types/dataTypes";
 import { drawGithubHeatmap, drawKindleHeatmap, drawSleepHeatmap, drawWorkoutHeatmap } from "./heatmapUtils";
 
 const Home = () => {
@@ -15,13 +15,13 @@ const Home = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const workoutData = await fetchData<WorkoutData[]>("/workout-data");
-        const readingData = await fetchData<ReadingData[]>("/kindle-data");
-        const githubData = await fetchData<GithubData[]>("/github-data");
-        const sleepData = await fetchData<SleepData[]>("/sleep-data");
-        drawWorkoutHeatmap(workoutCal, workoutData)
-        drawKindleHeatmap(readingCal, readingData)
-        drawGithubHeatmap(githubCal, githubData)
+        const workoutData = await fetchData<DataResponseType<WorkoutData[]>>("/workout-data");
+        const readingData = await fetchData<DataResponseType<ReadingData[]>>("/kindle-data");
+        const githubData = await fetchData<DataResponseType<GithubData[]>>("/github-data");
+        const sleepData = await fetchData<DataResponseType<SleepData[]>>("/sleep-data");
+        drawWorkoutHeatmap(workoutCal, workoutData["data"])
+        drawKindleHeatmap(readingCal, readingData["data"])
+        drawGithubHeatmap(githubCal, githubData["data"])
         drawSleepHeatmap(sleepCal, sleepData)
       } catch (error) {
         console.error("Error fetching data:", error);
