@@ -18,8 +18,18 @@ export interface ReadingData {
 
 export interface GithubData {
   "date": string,
-  "repository_name": string
+  "repository_name": string,
+  "repository_url": string,
+  "repository_image": string,
   "total_commits": string,
+}
+
+export interface DistinctRepos {
+  "index": number,
+  "date": string,
+  "repository_name": string,
+  "repository_url": string,
+  "repository_image": string,
 }
 
 export interface SleepData {

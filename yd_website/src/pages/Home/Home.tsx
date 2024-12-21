@@ -3,22 +3,20 @@ import styles from "./Home.module.css"
 import { fetchData } from "../../api/axiosClient";
 // @ts-expect-error cal-heatmap library don't have declration files :(
 import CalHeatmap from 'cal-heatmap';
-import { DataResponseType, GithubData, SleepData, WorkoutData } from "../../types/dataTypes";
-import { drawGithubHeatmap, drawSleepHeatmap, drawWorkoutHeatmap } from "./heatmapUtils";
+import { DataResponseType, SleepData, WorkoutData } from "../../types/dataTypes";
+import {  drawSleepHeatmap, drawWorkoutHeatmap } from "./heatmapUtils";
 import ReadingHeatmap from "./ReadingHeatmap/ReadingHeatmap";
+import GithubHeatmap from "./GithubHeatmap/GithubHeatmap";
 
 const Home = () => {
   const [workoutCal,] = useState(new CalHeatmap())
-  const [githubCal,] = useState(new CalHeatmap())
   const [sleepCal,] = useState(new CalHeatmap())
   useEffect(() => {
     const getData = async () => {
       try {
         const workoutData = await fetchData<DataResponseType<WorkoutData[]>>("/workout-data");
-        const githubData = await fetchData<DataResponseType<GithubData[]>>("/github-data");
         const sleepData = await fetchData<DataResponseType<SleepData[]>>("/sleep-data");
         drawWorkoutHeatmap(workoutCal, workoutData["data"])
-        drawGithubHeatmap(githubCal, githubData["data"])
         drawSleepHeatmap(sleepCal, sleepData)
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -57,18 +55,7 @@ const Home = () => {
 
         <ReadingHeatmap />
 
-        <div
-          className={styles.dataSection}
-        >
-          <h2>Github Activity (From Gitlab)</h2>
-          <div id="github-heatmap"></div>
-          <div id="github-legend"></div>
-          <p>
-            2024 was the year I learned how to code (properly). I learned react, spring boot,
-            typescript, vite, rest apis, graphql queries and so much moree. Although having
-            done all that I was not able to land a single web dev job offer 💀.
-          </p>
-        </div>
+        <GithubHeatmap />
 
         <div
           className={styles.dataSection}
