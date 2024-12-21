@@ -105,7 +105,6 @@ function drawHeatmap({
       }
     }
   }
-  cal.destroy()
   cal.paint(options, plugins);
 }
 
@@ -182,7 +181,6 @@ export function drawGithubHeatmap(cal: CalHeatmap, data: GithubData[]) {
       }
     }
   }
-  cal.destroy()
   cal.paint(options, plugins);
 }
 
