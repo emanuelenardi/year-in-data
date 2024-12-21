@@ -60,7 +60,7 @@ def get_distinct_map(
     
 
 @app.get('/workout-data', response_model=dict)
-def get_kindle_data(year: Optional[int] = Query(None)):
+def get_workout_data(year: Optional[int] = Query(None)):
     table = "workout_data_daily"
     return {
         "distinct_categories": get_distinct_map(table, "workout_name", year),
@@ -86,13 +86,29 @@ def get_kindle_data(year: Optional[int] = Query(None)):
         "data": get_annual_table_data(table, year)
     }
 
-@app.get('/github-data', response_model=dict)
-def get_kindle_data(year: Optional[int] = Query(None)):
+@app.get('/github-data', response_model=List[dict])
+def get_github_data(year: Optional[int] = Query(None)):
     table = "github_data_daily"
-    return {
-        "distinct_categories": get_distinct_map(table, "repository_name", year),
-        "data": get_annual_table_data(table, year)
-    }
+    return get_annual_table_data(table, year)
+
+@app.get("/distinct-github-repos", response_model=List[dict])
+def get_distinct_github_repos(year: Optional[int] = Query(None)):
+    table = "github_distinct_repos"
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = f"SELECT * FROM {table}"
+    
+    if year:
+        query += " WHERE strftime('%Y', latest_date) = ?"
+        query += " ORDER BY latest_date DESC"
+        rows = cursor.execute(query, (str(year),)).fetchall()
+    else:
+        query += " ORDER BY latest_date DESC"
+        rows = cursor.execute(query).fetchall()
+    
+    conn.close()
+
+    return [dict(row) for row in rows]
 
 @app.get("/sleep-data", response_model=dict)
 def get_sleep_data(year: Optional[int] = Query(None)):

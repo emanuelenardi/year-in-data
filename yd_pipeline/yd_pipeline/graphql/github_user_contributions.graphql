@@ -8,6 +8,8 @@ query GetUserContributionCommits($username: String!, $from: DateTime, $to: DateT
             occurredAt
             repository {
               name
+              url
+              openGraphImageUrl
             }
           },
         }

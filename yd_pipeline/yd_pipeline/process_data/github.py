@@ -29,7 +29,9 @@ def unpack_contributions_dict(contributions_for_repo: dict) -> List[Contribution
                             "commitCount": int,
                             "occurredAt": str,
                             "repository": {
-                                "name": str
+                                "name": str,
+                                "url": str,
+                                "openGraphImageUrl": str
                             }
                         }
                     ]
@@ -46,7 +48,9 @@ def unpack_contributions_dict(contributions_for_repo: dict) -> List[Contribution
                 {
                     commitCount: int
                     occurredAt: str
-                    repository_name: str
+                    repository_name: str,
+                    repository_url: str,
+                    repositroy_image: str
                 }
             ]
             ```
@@ -55,7 +59,9 @@ def unpack_contributions_dict(contributions_for_repo: dict) -> List[Contribution
         node_list = [{
             "commitCount": node["commitCount"],
             "occurredAt": node["occurredAt"],
-            "repository_name": node["repository"]["name"] # these should all be the same :p
+            "repository_name": node["repository"]["name"], # these should all be the same :p
+            "repository_url": node["repository"]["url"],
+            "repository_image": node["repository"]["openGraphImageUrl"] 
         } for node in node_list]
         return node_list
 
@@ -86,7 +92,9 @@ def process_github_data(github_username: str, github_token: str):
                     "commitCount": int,
                     "occurredAt": str,
                     "repository": {
-                        "name": str
+                        "name": str,
+                        "url": str,
+                        "openGraphImageUrl": str
                     }
                 }
             ]
@@ -136,13 +144,14 @@ def process_github_data(github_username: str, github_token: str):
         [
             "commitCount",
             "occurredAt",
-            "repository_name"
+            "repository_name",
+            "repository_url",
+            "repository_image"
         ]
     )
     github_activity_df = github_activity_df.rename(columns={
         "commitCount": "total_commits",
-        "occurredAt": "date",
-        "repository_name": "repository_name"
+        "occurredAt": "date"
     })
     github_activity_df["date"] = pd.to_datetime(
         github_activity_df["date"],
@@ -150,3 +159,28 @@ def process_github_data(github_username: str, github_token: str):
     ).dt.date
     connection = sqlite3.connect('data/output/year_in_data.db')
     github_activity_df.to_sql('github_data_daily', connection, if_exists='replace')
+    
+
+def get_distinct_repos():
+    connection = sqlite3.connect('data/output/year_in_data.db')
+    cursor = connection.cursor()
+    query = """
+    SELECT 
+        repository_name, 
+        repository_url, 
+        repository_image, 
+        MAX(date) as latest_date 
+    FROM 
+        github_data_daily 
+    GROUP BY 
+        repository_name, 
+        repository_url, 
+        repository_image
+    ORDER BY 
+        latest_date
+    """
+    distinct_repos = cursor.execute(query).fetchall()
+    distinct_repos_df = pd.DataFrame(distinct_repos, columns=["repository_name", "repository_url", "repository_image", "latest_date"])
+    distinct_repos_df.to_sql('github_distinct_repos', connection, if_exists='replace')
+    
+    
