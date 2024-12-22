@@ -3,7 +3,7 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 interface ItemType {
   name: string,
-  imageUrl: string,
+  imageUrl?: string,
 }
 
 const FilterCarousel = (
@@ -30,7 +30,11 @@ const FilterCarousel = (
         key={`book-${index}`}
         onClick={() => setSelectedIndex(index)}
       >
-        <img src={item["imageUrl"]} />
+        {
+          item["imageUrl"] ?
+            <img src={item["imageUrl"]} /> :
+            item["name"]
+        }
       </div>
     )
   })
@@ -38,7 +42,7 @@ const FilterCarousel = (
   const showAllElement = (
     <div
       id={styles.showAll}
-      className={[styles.itemImage, selectedIndex === -1 ? styles.itemSelected: ""].join(" ")}
+      className={[styles.itemImage, selectedIndex === -1 ? styles.itemSelected : ""].join(" ")}
       key={`book--1`}
       onClick={() => setSelectedIndex(-1)}
     >
@@ -46,10 +50,10 @@ const FilterCarousel = (
     </div>
   )
 
-  function scrollParentElement(clickEvent: React.MouseEvent, direction: "left"|"right") {
+  function scrollParentElement(clickEvent: React.MouseEvent, direction: "left" | "right") {
     const parentElement = clickEvent.currentTarget.parentElement
     if (!parentElement) return
-    const sign = direction==="left" ? -1 : 1
+    const sign = direction === "left" ? -1 : 1
     parentElement.scrollBy(0.8 * sign * parentElement.offsetWidth, 0)
   }
 
@@ -66,7 +70,7 @@ const FilterCarousel = (
           className={styles.navigation}
           onClick={(event) => scrollParentElement(event, "left")}
         >
-          <FaArrowLeft /> 
+          <FaArrowLeft />
         </button>
         {itemImageElements}
         <button
@@ -80,5 +84,5 @@ const FilterCarousel = (
     </div>
   );
 }
- 
+
 export default FilterCarousel;
