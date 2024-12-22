@@ -66,19 +66,28 @@ def process_strong_data(csv_file: BinaryIO):
     strong_df.to_sql('workout_data_fine_grain', connection, if_exists='replace')
 
     # For daily info
-    daily_columns = ["date", "workout_name", "workout_duration_milliseconds", "volume"]
+    daily_columns = [
+        "date", 
+        "workout_name", 
+        "exercise_name", 
+        "workout_duration_milliseconds", 
+        "set_order",
+        "volume"
+    ]
     daily_strong_df = strong_df[daily_columns]
     daily_strong_df.loc[:,"date"] = pd.to_datetime(
         daily_strong_df["date"],
         format="ISO8601"
     ).dt.date
     daily_strong_df = (daily_strong_df
-        .groupby(["date", "workout_name"])
+        .groupby(["date", "workout_name", "exercise_name"])
         .aggregate({
             "workout_duration_milliseconds": "min",
-            "volume": "sum"
+            "volume": "sum",
+            "set_order": "max"
         })
     )
+    daily_strong_df = daily_strong_df.rename(columns={"set_order": "total_sets"})
     daily_strong_df["workout_duration_minutes"] = (
         daily_strong_df["workout_duration_milliseconds"]
         .apply(lambda x : x /(60 * 1000))
