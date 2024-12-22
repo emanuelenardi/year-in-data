@@ -5,10 +5,10 @@ import { fetchData } from "../../../api/axiosClient"
 import { DistinctBooks, ReadingData } from "../../../types/dataTypes"
 // @ts-expect-error cal-heatmap library don't have declration files :(
 import CalHeatmap from 'cal-heatmap';
-import BookCarousel from "./BookCarousel/BookCarousel"
+import FilterCarousel from "../../../components/FilterCarousel/FilterCarousel"
 
 const ReadingHeatmap = () => {
-  const [selectedBook, setSelectedBook] = useState<string>("")
+  const [selectedBook, setSelectedBook] = useState<number>(-1)
   const [books, setBooks] = useState<DistinctBooks[]>([])
   const [readingActivity, setReadingActivity] = useState<ReadingData[]>()
   const [readingCal,] = useState(new CalHeatmap())
@@ -26,7 +26,12 @@ const ReadingHeatmap = () => {
 
   useEffect(() => {
     if (readingActivity) {
-      const newActivity = readingActivity.filter((data) => data["ASIN"].includes(selectedBook))
+      let newActivity = readingActivity
+      if (selectedBook !== -1) {
+        newActivity = readingActivity.filter((data) => {
+          return data["ASIN"] === books[selectedBook]["ASIN"]
+        })
+      }
       drawKindleHeatmap(readingCal, newActivity)
     }
   }, [selectedBook])
@@ -38,10 +43,16 @@ const ReadingHeatmap = () => {
       <h2>Reading Activity (From Amazon Kindle)</h2>
       <div id="reading-heatmap" style={{ height: "7rem" }}></div>
       <div id="reading-legend"></div>
-      <BookCarousel
-        books={books}
-        selectedValue={selectedBook}
-        setSelectedValue={setSelectedBook}
+
+      <FilterCarousel
+        items={books.map(book => {
+          return {
+            name: book.ASIN,
+            imageUrl: book.book_image
+          }
+        })}
+        selectedIndex={selectedBook}
+        setSelectedIndex={setSelectedBook}
       />
       <p>
         I feel my reading habit comes and goes in waves. Although from september onward
