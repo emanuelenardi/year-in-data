@@ -86,6 +86,26 @@ def get_kindle_data(year: Optional[int] = Query(None)):
         "data": get_annual_table_data(table, year)
     }
 
+@app.get("/distinct-kindle-books", response_model=List[dict])
+def get_distinct_kindle_books(year: Optional[int] = Query(None)):
+    table = "kindle_distinct_books"
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = f"SELECT * FROM {table}"
+    
+    if year:
+        query += " WHERE strftime('%Y', latest_date) = ?"
+        query += " ORDER BY latest_date DESC"
+        rows = cursor.execute(query, (str(year),)).fetchall()
+    else:
+        query += " ORDER BY latest_date DESC"
+        rows = cursor.execute(query).fetchall()
+    
+    conn.close()
+
+    return [dict(row) for row in rows]
+
+
 @app.get('/github-data', response_model=List[dict])
 def get_github_data(year: Optional[int] = Query(None)):
     table = "github_data_daily"
