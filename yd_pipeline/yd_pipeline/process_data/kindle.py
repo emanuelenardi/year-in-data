@@ -4,7 +4,7 @@ from yd_pipeline.utils import (
     check_columns_exist,
     detect_delimiter,
 )
-from typing import BinaryIO
+from typing import BinaryIO, Union
 
 
 def process_kindle_data(csv_file: BinaryIO):
@@ -60,3 +60,72 @@ def process_kindle_data(csv_file: BinaryIO):
     daily_kindle_df = daily_kindle_df[daily_kindle_df["total_reading_minutes"] != 0]
     daily_kindle_df.to_sql('kindle_data_daily', connection, if_exists='replace')
     
+def get_distinct_books():
+    """Create kindle_distinct_books table with columns 
+    ["ASIN", "latest_date", "total_reading_minutes", "book_image"]. The table contains
+    all the books read.
+    """
+    connection = sqlite3.connect('data/output/year_in_data.db')
+    cursor = connection.cursor()
+    query = """
+    SELECT 
+        ASIN , 
+        SUM(total_reading_minutes),
+        MAX(date) as latest_date 
+    FROM 
+        kindle_data_daily 
+    GROUP BY 
+        ASIN
+    ORDER BY 
+        latest_date
+    """
+    distinct_items = cursor.execute(query).fetchall()
+    distinct_items_df = pd.DataFrame(
+        distinct_items, 
+        columns=["ASIN", "total_reading_minutes", "latest_date"]
+    )
+    distinct_items_df["book_image"] = (
+        distinct_items_df["ASIN"]
+        .apply(get_asin_image) 
+    )
+    distinct_items_df.to_sql('kindle_distinct_books', connection, if_exists='replace')
+
+
+def is_valid_asin(asin: str) -> bool:
+    """Checks if a given string is an ASIN code. Asin codes are made of 10 alphanumeric
+    characters. They begin with "B0" 
+
+    Parameters
+    ----------
+    asin : str
+        String to check
+
+    Returns
+    -------
+    bool
+        True if input is an asin code.
+    """
+    return (
+        len(asin) == 10 and 
+        asin.isalnum() and 
+        asin.isupper() and
+        asin.startswith("B0")
+    )
+
+def get_asin_image(asin: str) -> Union[str, None]:
+    """Returns the image url associated with a given asin code. Returns None if not valid
+    asin.
+
+    Parameters
+    ----------
+    asin : str
+        asin code.
+
+    Returns
+    -------
+    str | None
+        Returns asin image url if input is valid asin code. Otherwise returns None.
+    """
+    if (not is_valid_asin(asin)):
+        return None
+    return f"https://images.amazon.com/images/P/{asin}.jpg"

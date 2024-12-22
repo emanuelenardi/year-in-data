@@ -1,5 +1,5 @@
 from yd_pipeline.process_data.strong import process_strong_data
-from yd_pipeline.process_data.kindle import process_kindle_data
+from yd_pipeline.process_data.kindle import process_kindle_data, get_distinct_books
 from yd_pipeline.process_data.github import process_github_data, get_distinct_repos
 from yd_pipeline.process_data.fitbit import process_sleep_data
 from pathlib import Path
@@ -26,6 +26,7 @@ kindle_data_filepath = (
 )
 with open(kindle_data_filepath) as kindle_csv:
     process_kindle_data(kindle_csv)
+    get_distinct_books()
 
 # ETL github data
 # I WILL NOT COMMIT MY GITHUB TOKEN TO GIT.
