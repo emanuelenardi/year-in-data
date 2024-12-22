@@ -67,24 +67,10 @@ def get_workout_data(year: Optional[int] = Query(None)):
         "data": get_annual_table_data(table, year)
     }
 
-@app.get('/kindle-data', response_model=dict)
+@app.get('/kindle-data', response_model=List[dict])
 def get_kindle_data(year: Optional[int] = Query(None)):
     table = "kindle_data_daily"
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    query = f"SELECT DISTINCT ASIN FROM {table} WHERE total_reading_minutes >= 10"
-    
-    if year:
-        query += " AND strftime('%Y', date) = ?"
-        rows = cursor.execute(query, (str(year),)).fetchall()
-    else:
-        rows = cursor.execute(query).fetchall()
-    
-    conn.close()
-    return {
-        "distinct_categories": {dict(row)["ASIN"]: index for index, row in enumerate(rows)},
-        "data": get_annual_table_data(table, year)
-    }
+    return get_annual_table_data(table, year)
 
 @app.get("/distinct-kindle-books", response_model=List[dict])
 def get_distinct_kindle_books(year: Optional[int] = Query(None)):
