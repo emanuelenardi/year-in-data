@@ -3,20 +3,18 @@ import styles from "./Home.module.css"
 import { fetchData } from "../../api/axiosClient";
 // @ts-expect-error cal-heatmap library don't have declration files :(
 import CalHeatmap from 'cal-heatmap';
-import { DataResponseType, SleepData, WorkoutData } from "../../types/dataTypes";
-import {  drawSleepHeatmap, drawWorkoutHeatmap } from "./heatmapUtils";
+import { DataResponseType, SleepData } from "../../types/dataTypes";
+import {  drawSleepHeatmap } from "./heatmapUtils";
 import ReadingHeatmap from "./ReadingHeatmap/ReadingHeatmap";
 import GithubHeatmap from "./GithubHeatmap/GithubHeatmap";
+import WorkoutHeatmap from "./WorkoutHeatmap/WorkoutHeatmap";
 
 const Home = () => {
-  const [workoutCal,] = useState(new CalHeatmap())
   const [sleepCal,] = useState(new CalHeatmap())
   useEffect(() => {
     const getData = async () => {
       try {
-        const workoutData = await fetchData<DataResponseType<WorkoutData[]>>("/workout-data");
         const sleepData = await fetchData<DataResponseType<SleepData[]>>("/sleep-data");
-        drawWorkoutHeatmap(workoutCal, workoutData["data"])
         drawSleepHeatmap(sleepCal, sleepData)
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -40,18 +38,7 @@ const Home = () => {
         className={styles.mainContent}
       >
 
-        <div
-          className={styles.dataSection}
-        >
-          <h2>Workout Activity (From Strong workout app)</h2>
-          <div id="workout-heatmap"></div>
-          <div id="workout-legend"></div>
-          <p>
-            Damn I fell off. Although I feel like I've still been gaining muscle more now.
-            I started my first job near the end of April. You can see how the frequency
-            decreases after this point.
-          </p>
-        </div>
+        <WorkoutHeatmap />
 
         <ReadingHeatmap />
 

@@ -69,7 +69,8 @@ function drawHeatmap({
   name,
   legendLabel,
   color,
-  units
+  units,
+  groupY="sum"
 }: {
   cal: CalHeatmap,
   data: unknown[],
@@ -78,7 +79,8 @@ function drawHeatmap({
   name: string,
   legendLabel: string,
   color: { range?: string[] | unknown, scheme?: string, domain: number[] },
-  units: string
+  units: string,
+  groupY?: string
 }) {
   const plugins = [...basePlugins]
   plugins.push([
@@ -95,7 +97,7 @@ function drawHeatmap({
       source: data,
       x: dateCol,
       y: valueCol,
-      groupY: "sum"
+      groupY: groupY
     },
     itemSelector: `#${name}-heatmap`,
     scale: {
@@ -108,34 +110,25 @@ function drawHeatmap({
   cal.paint(options, plugins);
 }
 
-export function drawWorkoutHeatmap(cal: CalHeatmap, data: WorkoutData[]) {
-  const plugins = [...basePlugins]
-  plugins.push([
-    Legend,
+export function drawWorkoutHeatmap(calH: CalHeatmap, data: WorkoutData[]) {
+  drawHeatmap(
     {
-      label: 'Duration in minutes',
-      itemSelector: '#workout-legend',
-    },
-  ])
-  plugins.push(createTooltip("minutes"))
-  const options = {
-    ...baseOptions,
-    data: {
-      source: data,
-      x: "date",
-      y: "workout_duration_minutes",
-      groupY: "min"
-    },
-    itemSelector: '#workout-heatmap',
-    scale: {
+      cal: calH,
+      data: data,
+      dateCol: "date",
+      valueCol: "workout_duration_minutes",
+      name: "workout",
+      legendLabel: "Minutes working out",
       color: {
         scheme: "YlGnBu",
-        domain: [-10, 100],
-      }
+        domain: [40, 60, 80, 100],
+      },
+      units: "minutes",
+      groupY: "max"
     }
-  }
-  cal.paint(options, plugins);
+  )
 }
+
 
 export function drawKindleHeatmap(cal: CalHeatmap, data: ReadingData[]) {
   drawHeatmap(
