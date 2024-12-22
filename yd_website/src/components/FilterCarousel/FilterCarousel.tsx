@@ -33,7 +33,9 @@ const FilterCarousel = (
         {
           item["imageUrl"] ?
             <img src={item["imageUrl"]} /> :
-            item["name"]
+            <div style={{width: "7rem", padding: "0.5rem", fontSize: "1rem"}}>
+              {item["name"]}
+            </div>
         }
       </div>
     )

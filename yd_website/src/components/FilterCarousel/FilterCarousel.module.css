@@ -18,6 +18,7 @@
 
 .itemImage {
   height: 100%;
+  min-width: 2rem;
   width: fit-content;
   background-color: white;
   color: black;
