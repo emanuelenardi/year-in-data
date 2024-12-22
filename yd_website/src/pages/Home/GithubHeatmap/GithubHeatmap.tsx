@@ -5,31 +5,36 @@ import { fetchData } from "../../../api/axiosClient"
 import { DistinctRepos, GithubData } from "../../../types/dataTypes"
 // @ts-expect-error cal-heatmap library don't have declration files :(
 import CalHeatmap from 'cal-heatmap';
-import ItemCarousel from "./ItemCarousel/ItemCarousel"
+import FilterCarousel from "../../../components/FilterCarousel/FilterCarousel"
 
 const GithubHeatmap = () => {
-  const [selectedItem, setSelectedItem] = useState<string>("")
-  const [distinctItems, setDistinctItems] = useState<DistinctRepos[]>([])
-  const [activityData, setActivityData] = useState<GithubData[]>()
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1)
+  const [distinctRepos, setDistinctRepos] = useState<DistinctRepos[]>([])
+  const [activity, setActivity] = useState<GithubData[]>()
   const [cal,] = useState(new CalHeatmap())
 
   useEffect(() => {
     async function getData() {
       const data = await fetchData<GithubData[]>("/github-data?year=2024")
       const distinctRepos = await fetchData<DistinctRepos[]>("/distinct-github-repos?year=2024")
-      setActivityData(data)
+      setActivity(data)
       drawGithubHeatmap(cal, data)
-      setDistinctItems(distinctRepos)
+      setDistinctRepos(distinctRepos)
     }
     getData()
   }, [])
 
   useEffect(() => {
-    if (activityData) {
-      const newActivity = activityData.filter((data) => data["repository_name"].includes(selectedItem))
+    if (activity) {
+      let newActivity = activity
+      if (selectedIndex !== -1) {
+        newActivity = activity.filter((data) => {
+          return data["repository_name"] === distinctRepos[selectedIndex]["repository_name"]
+        })
+      }
       drawGithubHeatmap(cal, newActivity)
     }
-  }, [selectedItem])
+  }, [selectedIndex])
 
   return (
     <div
@@ -38,10 +43,15 @@ const GithubHeatmap = () => {
       <h2>Github Activity (From Gitlab)</h2>
       <div id="github-heatmap" style={{ height: "7rem" }}></div>
       <div id="github-legend"></div>
-      <ItemCarousel
-        items={distinctItems}
-        selectedValue={selectedItem}
-        setSelectedValue={setSelectedItem}
+      <FilterCarousel
+        items={distinctRepos.map((repo) => {
+          return {
+            "name": repo["repository_name"],
+            "imageUrl": repo["repository_image"]
+          }
+        })}
+        selectedIndex={selectedIndex}
+        setSelectedIndex={setSelectedIndex}
       />
       <p>
         2024 was the year I learned how to code (properly). I learned react, spring boot,
