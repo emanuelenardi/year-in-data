@@ -95,4 +95,50 @@ def process_strong_data(csv_file: BinaryIO):
     daily_strong_df = daily_strong_df.drop(columns=["workout_duration_milliseconds"])
     daily_strong_df.to_sql("workout_data_daily", connection, if_exists='replace')
     
-    
+
+def get_distinct_workouts():
+    """Create workout_distinct_workouts table.
+    """
+    connection = sqlite3.connect('data/output/year_in_data.db')
+    cursor = connection.cursor()
+    query = """
+    SELECT 
+        workout_name , 
+        MAX(date) as latest_date 
+    FROM 
+        workout_data_daily 
+    GROUP BY 
+        workout_name
+    ORDER BY 
+        latest_date DESC
+    """
+    distinct_items = cursor.execute(query).fetchall()
+    distinct_items_df = pd.DataFrame(
+        distinct_items, 
+        columns=["workout_name", "latest_date"]
+    )
+    distinct_items_df.to_sql('workout_distinct_workouts', connection, if_exists='replace')
+
+
+def get_distinct_exercises():
+    """Create workout_distinct_exercises table.
+    """
+    connection = sqlite3.connect('data/output/year_in_data.db')
+    cursor = connection.cursor()
+    query = """
+    SELECT 
+        exercise_name , 
+        MAX(date) as latest_date
+    FROM 
+        workout_data_daily 
+    GROUP BY 
+        exercise_name
+    ORDER BY 
+        latest_date DESC
+    """
+    distinct_items = cursor.execute(query).fetchall()
+    distinct_items_df = pd.DataFrame(
+        distinct_items, 
+        columns=["exercise_name", "latest_date"]
+    )
+    distinct_items_df.to_sql('workout_distinct_exercises', connection, if_exists='replace')

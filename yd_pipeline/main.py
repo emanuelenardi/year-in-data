@@ -1,4 +1,8 @@
-from yd_pipeline.process_data.strong import process_strong_data
+from yd_pipeline.process_data.strong import (
+    process_strong_data, 
+    get_distinct_exercises,
+    get_distinct_workouts
+)
 from yd_pipeline.process_data.kindle import process_kindle_data, get_distinct_books
 from yd_pipeline.process_data.github import process_github_data, get_distinct_repos
 from yd_pipeline.process_data.fitbit import process_sleep_data
@@ -14,6 +18,8 @@ data_file_path = root_dir / "data" / "input"
 strong_data_filepath = data_file_path / "strong266140424475682467.csv"
 with open(strong_data_filepath) as strong_csv:
     process_strong_data(strong_csv)
+    get_distinct_workouts()
+    get_distinct_exercises()
 
 # ETL kindle data
 kindle_data_filepath = (
