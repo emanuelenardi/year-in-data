@@ -1,44 +1,42 @@
+import { DistinctBooks } from "../../../../types/dataTypes";
 import styles from "./BookCarousel.module.css"
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 const BookCarousel = (
   {
-    asinCodes,
+    books,
     selectedValue,
     setSelectedValue
   }: {
-    asinCodes: string[],
+    books: DistinctBooks[],
     selectedValue: string,
     setSelectedValue: CallableFunction
   }
 ) => {
 
-  const bookImages = ["", ...asinCodes].map((asinCode, index) => {
-    if (index === 0) {
-      return <div
-        className={styles.bookImage}
-        key={`book-${index}`}
-        onClick={() => setSelectedValue(asinCode)}
-        style={selectedValue === asinCode ? { border: "solid 3px #FE9928" } : {}}
-      >
-        Show all books
-      </div>
-    }
+  const bookImages = books.map((book, index) => {
 
-    if (isValidASIN(asinCode)) {
-      const productImage = `https://images.amazon.com/images/P/${asinCode}.jpg`
-      return (
-        <div
-          className={[styles.bookImage, styles.showAll].join(" ")}
-          key={`book-${index}`}
-          onClick={() => setSelectedValue(asinCode)}
-          style={selectedValue === asinCode ? { border: "solid 3px #FE9928" } : {}}
-        >
-          <img src={productImage} />
-        </div>
-      )
-    }
+    return (
+      <div
+        className={[styles.bookImage, styles.showAll].join(" ")}
+        key={`book-${index}`}
+        onClick={() => setSelectedValue(book["ASIN"])}
+        style={selectedValue === book["ASIN"] ? { border: "solid 3px #FE9928" } : {}}
+      >
+        <img src={book["book_image"]} />
+      </div>
+    )
   })
+
+
+  bookImages.unshift(<div
+    className={styles.bookImage}
+    key={`book--1`}
+    onClick={() => setSelectedValue("")}
+    style={selectedValue === "" ? { border: "solid 3px #FE9928" } : {}}
+  >
+    Show all books
+  </div>)
 
   return (
     <div className={styles.bookCarousel}>
@@ -68,8 +66,3 @@ const BookCarousel = (
 }
 
 export default BookCarousel;
-
-function isValidASIN(asin: string): boolean {
-  const asinRegex = /^[A-Z0-9]{10}$/;
-  return asinRegex.test(asin);
-}

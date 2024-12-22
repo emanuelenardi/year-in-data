@@ -16,6 +16,14 @@ export interface ReadingData {
   "ASIN": string,
 }
 
+export interface DistinctBooks {
+  "index": number,
+  "ASIN": string,
+  "total_reading_minutes": number,
+  "latest_date": string,
+  "book_image":string,
+}
+
 export interface GithubData {
   "date": string,
   "repository_name": string,

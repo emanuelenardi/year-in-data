@@ -2,23 +2,24 @@ import { useEffect, useState } from "react"
 import styles from "./ReadingHeatmap.module.css"
 import { drawKindleHeatmap } from "../heatmapUtils"
 import { fetchData } from "../../../api/axiosClient"
-import { DataResponseType, ReadingData } from "../../../types/dataTypes"
+import { DistinctBooks, ReadingData } from "../../../types/dataTypes"
 // @ts-expect-error cal-heatmap library don't have declration files :(
 import CalHeatmap from 'cal-heatmap';
 import BookCarousel from "./BookCarousel/BookCarousel"
 
 const ReadingHeatmap = () => {
   const [selectedBook, setSelectedBook] = useState<string>("")
-  const [books, setBooks] = useState<string[]>([])
+  const [books, setBooks] = useState<DistinctBooks[]>([])
   const [readingActivity, setReadingActivity] = useState<ReadingData[]>()
   const [readingCal,] = useState(new CalHeatmap())
 
   useEffect(() => {
     async function getData() {
-      const readingData = await fetchData<DataResponseType<ReadingData[]>>("/kindle-data?year=2024")
-      setReadingActivity(readingData["data"])
-      drawKindleHeatmap(readingCal, readingData["data"])
-      setBooks(Object.keys(readingData["distinct_categories"]))
+      const readingData = await fetchData<ReadingData[]>("/kindle-data?year=2024")
+      const distinctBooks = await fetchData<DistinctBooks[]>("distinct-kindle-books?year=2024")
+      setReadingActivity(readingData)
+      drawKindleHeatmap(readingCal, readingData)
+      setBooks(distinctBooks)
     }
     getData()
   }, [])
@@ -38,7 +39,7 @@ const ReadingHeatmap = () => {
       <div id="reading-heatmap" style={{ height: "7rem" }}></div>
       <div id="reading-legend"></div>
       <BookCarousel
-        asinCodes={books}
+        books={books}
         selectedValue={selectedBook}
         setSelectedValue={setSelectedBook}
       />

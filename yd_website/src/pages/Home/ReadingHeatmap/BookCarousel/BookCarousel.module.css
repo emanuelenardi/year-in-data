@@ -3,7 +3,7 @@
   gap: 1rem;
   width: 100%;
   overflow: scroll;
-  padding: 1rem;
+  padding: 1rem 0;
   scroll-behavior: smooth;
 }
 
