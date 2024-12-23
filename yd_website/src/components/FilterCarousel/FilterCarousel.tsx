@@ -10,11 +10,13 @@ const FilterCarousel = (
   {
     items,
     selectedIndex,
-    setSelectedIndex
+    setSelectedIndex,
+    height=8
   }: {
     items: ItemType[],
     selectedIndex: number,
-    setSelectedIndex: CallableFunction
+    setSelectedIndex: CallableFunction,
+    height?: number
   }
 ) => {
 
@@ -69,6 +71,7 @@ const FilterCarousel = (
   return (
     <div
       className={styles.container}
+      style={{height: `${height}rem`}}
     >
       {showAllElement}
       <div
