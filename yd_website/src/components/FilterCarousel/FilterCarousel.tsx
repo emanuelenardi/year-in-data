@@ -19,7 +19,7 @@ const FilterCarousel = (
 ) => {
 
   const itemImageElements = items.map((item, index) => {
-    const classes = [styles.itemImage]
+    const classes = [styles.itemContainer]
     if (selectedIndex === index) {
       classes.push(styles.itemSelected)
     }
@@ -31,9 +31,15 @@ const FilterCarousel = (
         onClick={() => setSelectedIndex(index)}
       >
         {
-          item["imageUrl"] ?
-            <img src={item["imageUrl"]} /> :
-            <div style={{width: "7rem", padding: "0.5rem", fontSize: "1rem"}}>
+          item["imageUrl"]
+            ?
+            <img
+              className={styles.itemImage}
+              src={item["imageUrl"]} />
+            :
+            <div
+              className={styles.itemText}
+            >
               {item["name"]}
             </div>
         }
@@ -43,12 +49,13 @@ const FilterCarousel = (
 
   const showAllElement = (
     <div
-      id={styles.showAll}
-      className={[styles.itemImage, selectedIndex === -1 ? styles.itemSelected : ""].join(" ")}
+      className={[styles.itemContainer, selectedIndex === -1 ? styles.itemSelected : ""].join(" ")}
       key={`book--1`}
       onClick={() => setSelectedIndex(-1)}
     >
-      Show all
+      <div className={styles.itemText}>
+        Show all
+      </div>
     </div>
   )
 
