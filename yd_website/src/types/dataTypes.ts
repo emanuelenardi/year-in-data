@@ -6,7 +6,8 @@ export interface DataResponseType<T> {
 export interface WorkoutData {
   "date": string,
   "workout_name": string,
-  "workout_duration": number,
+  "exercise_name": string,
+  "workout_duration_minutes": number,
   "volume": number
 }
 
