@@ -54,7 +54,7 @@
 
 .itemSelected {
   & > .itemText, & > .itemImage {
-    border: solid 3px #FE9928
+    border: solid 5px rgb(255, 60, 60)
   }
 }
 
