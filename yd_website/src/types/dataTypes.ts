@@ -1,8 +1,3 @@
-export interface DataResponseType<T> {
-  "distinct_categories": { [key: string]: number },
-  "data": T
-}
-
 export interface WorkoutData {
   "date": string,
   "workout_name": string,
@@ -42,7 +37,7 @@ export interface DistinctRepos {
 }
 
 export interface SleepData {
-  "data": string,
+  "date": string,
   "start_time": string,
   "end_time": string,
   "total_duration_hours": number

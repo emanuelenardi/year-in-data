@@ -130,12 +130,7 @@ def get_github_data(year: Optional[int] = Query(None)):
 def get_distinct_github_repos(year: Optional[int] = Query(None)):
     return get_distinct_data(table="github_distinct_repos", date_column="latest_date", year=year)
 
-@app.get("/sleep-data", response_model=dict)
+@app.get("/sleep-data", response_model=List[dict])
 def get_sleep_data(year: Optional[int] = Query(None)):
     table = "fitbit_sleep_data_processed"
-    return {
-        "distinct_categories": {
-            "sleep": 0
-        },
-        "data": get_annual_table_data(table, year)
-    } 
+    return get_annual_table_data(table, year)

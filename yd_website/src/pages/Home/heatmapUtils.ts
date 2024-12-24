@@ -9,7 +9,7 @@ import Tooltip from 'cal-heatmap/plugins/Tooltip';
 import 'cal-heatmap/cal-heatmap.css';
 import * as d3 from "d3-scale-chromatic"
 import { Dayjs } from "dayjs";
-import { DataResponseType, GithubData, ReadingData, SleepData, WorkoutData } from '../../types/dataTypes';
+import { GithubData, ReadingData, SleepData, WorkoutData } from '../../types/dataTypes';
 
 
 const baseOptions = {
@@ -177,11 +177,11 @@ export function drawGithubHeatmap(cal: CalHeatmap, data: GithubData[]) {
   cal.paint(options, plugins);
 }
 
-export function drawSleepHeatmap(cal: CalHeatmap, responseData: DataResponseType<SleepData[]>) {
+export function drawSleepHeatmap(cal: CalHeatmap, data: SleepData[]) {
   drawHeatmap(
     {
       cal: cal,
-      data: responseData["data"],
+      data: data,
       dateCol: "date",
       valueCol: "total_duration_hours",
       name: "sleep",
