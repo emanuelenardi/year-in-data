@@ -61,7 +61,7 @@ function createTooltip(unit: string) {
   ]
 }
 
-function drawHeatmap({
+export function drawHeatmap({
   cal,
   data,
   dateCol,

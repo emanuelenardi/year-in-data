@@ -3,6 +3,7 @@ import ReadingHeatmap from "./ReadingHeatmap/ReadingHeatmap";
 import GithubHeatmap from "./GithubHeatmap/GithubHeatmap";
 import WorkoutHeatmap from "./WorkoutHeatmap/WorkoutHeatmap";
 import SleepHeatmap from "./SleepHeatmap/SleepHeatmap";
+import CalorieHeatmap from "./CalorieHeatmap/CalorieHeatmap";
 
 const Home = () => {
 
@@ -27,6 +28,8 @@ const Home = () => {
         <GithubHeatmap />
 
         <SleepHeatmap />
+
+        <CalorieHeatmap />
       </div>
     </div>
   );
