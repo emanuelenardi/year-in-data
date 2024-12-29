@@ -134,3 +134,8 @@ def get_distinct_github_repos(year: Optional[int] = Query(None)):
 def get_sleep_data(year: Optional[int] = Query(None)):
     table = "fitbit_sleep_data_processed"
     return get_annual_table_data(table, year)
+
+@app.get("/calorie-data", response_model=List[dict])
+def get_sleep_data(year: Optional[int] = Query(None)):
+    table = "fitbit_calorie_data_processed"
+    return get_annual_table_data(table, year)
