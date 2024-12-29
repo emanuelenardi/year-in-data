@@ -5,7 +5,7 @@ from yd_pipeline.process_data.strong import (
 )
 from yd_pipeline.process_data.kindle import process_kindle_data, get_distinct_books
 from yd_pipeline.process_data.github import process_github_data, get_distinct_repos
-from yd_pipeline.process_data.fitbit import process_sleep_data
+from yd_pipeline.process_data.fitbit import process_sleep_data, process_calorie_data
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -51,4 +51,4 @@ fitbit_data_folderpath = (
     / "Global Export Data" 
 )
 process_sleep_data(fitbit_data_folderpath)
-get_distinct_repos()
+process_calorie_data(fitbit_data_folderpath)
