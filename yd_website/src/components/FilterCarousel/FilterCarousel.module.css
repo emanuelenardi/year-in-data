@@ -5,14 +5,22 @@
   gap: 1rem;
 }
 
+.itemCarouselContainer {
+  height: 100%;
+  position: relative;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
 .itemCarousel {
   height: 100%;
+  width: 100%;
   display: flex;
   gap: 1rem;
-  flex-grow: 1;
   overflow: scroll;
   scroll-behavior: smooth;
   padding: 1rem 0;
+  position: relative;
 }
 
 .itemContainer {
@@ -66,11 +74,14 @@
   justify-content: center;
   background-color: antiquewhite;
   color: black;
-  position: sticky;
+  position: absolute;
+  height: 100%;
   top: 50%;
+  translate: 0 -50%;
   border-radius: 0.5rem;
   border: solid black 3px;
   cursor: pointer;
+  z-index: 9;
 }
 
 .navigation:hover {

@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import styles from "./FilterCarousel.module.css"
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
@@ -11,7 +12,7 @@ const FilterCarousel = (
     items,
     selectedIndex,
     setSelectedIndex,
-    height=8
+    height = 8
   }: {
     items: ItemType[],
     selectedIndex: number,
@@ -19,6 +20,8 @@ const FilterCarousel = (
     height?: number
   }
 ) => {
+  const itemCarousel = useRef<HTMLDivElement>(null)
+  const [scroll, setScroll] = useState(0);
 
   const itemImageElements = items.map((item, index) => {
     const classes = [styles.itemContainer]
@@ -61,40 +64,69 @@ const FilterCarousel = (
     </div>
   )
 
-  function scrollParentElement(clickEvent: React.MouseEvent, direction: "left" | "right") {
-    const parentElement = clickEvent.currentTarget.parentElement
-    if (!parentElement) return
-    const sign = direction === "left" ? -1 : 1
-    parentElement.scrollBy(0.8 * sign * parentElement.offsetWidth, 0)
-  }
-
   return (
     <div
       className={styles.container}
-      style={{height: `${height}rem`}}
+      style={{ height: `${height}rem` }}
     >
       {showAllElement}
       <div
-        className={styles.itemCarousel}
+        className={styles.itemCarouselContainer}
       >
-        <button
-          id={styles.navLeft}
-          className={styles.navigation}
-          onClick={(event) => scrollParentElement(event, "left")}
+        {itemCarousel.current &&
+          (<>
+          <NavigationLeft element={itemCarousel.current} scroll={scroll} />
+          <NavigationRight element={itemCarousel.current} scroll={scroll} />
+          </>
+          )
+        }
+
+        <div
+          className={styles.itemCarousel}
+          ref={itemCarousel}
+          onScroll={event => setScroll(event.currentTarget.scrollLeft)}
         >
-          <FaArrowLeft />
-        </button>
-        {itemImageElements}
-        <button
-          id={styles.navRight}
-          className={styles.navigation}
-          onClick={(event) => scrollParentElement(event, "right")}
-        >
-          <FaArrowRight />
-        </button>
+          {itemImageElements}
+        </div>
+        
       </div>
     </div>
   );
+}
+
+const NavigationLeft = ({ element, scroll }: { element: HTMLDivElement, scroll: number }) => {
+  const [initialRender, setInitialRender] = useState(true)
+  useEffect(()=> {setTimeout(() => setInitialRender(false), 500)}, []) // 😭
+  if (scroll < 5  && !initialRender) return
+  return (
+    <button
+      id={styles.navLeft}
+      className={styles.navigation}
+      onClick={() => scrollElement(element, "left")}
+    >
+      <FaArrowLeft />
+    </button>
+  )
+}
+
+const NavigationRight = ({ element, scroll }: { element: HTMLDivElement, scroll: number }) => {
+  const [initialRender, setInitialRender] = useState(true)
+  useEffect(()=> {setTimeout(() => setInitialRender(false), 500)}, [])
+  if (scroll > (element.scrollWidth - 1.1* element.clientWidth) && !initialRender) return
+  return (
+    <button
+      id={styles.navRight}
+      className={styles.navigation}
+      onClick={() => scrollElement(element, "right")}
+    >
+      <FaArrowRight />
+    </button>
+  )
+}
+
+function scrollElement(element: HTMLDivElement, direction: "left" | "right") {
+  const sign = direction === "left" ? -1 : 1
+  element.scrollBy(0.8 * sign * element.offsetWidth, 0)
 }
 
 export default FilterCarousel;
