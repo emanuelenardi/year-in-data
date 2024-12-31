@@ -265,3 +265,55 @@ def process_steps(folder_path: str):
     df.to_sql("fitbit_steps_data_raw", connection, if_exists="replace")
     df = transform_time_series_data(df)
     df.to_sql("fitbit_steps_data_processed", connection, if_exists="replace")
+
+
+
+def transform_running_data(df: pd.DataFrame) -> pd.DataFrame:
+    """Apply transformations to running dataframe.
+
+    Parameters
+    ----------
+    sleep_df : pd.DataFrame
+        Raw Fibit dataframe containing columns:
+            `["startTime", "distance"]`
+    """
+    columns_to_keep = ["startTime", "distance"]
+    validate_columns(df, columns_to_keep)
+    df = df[columns_to_keep]
+    df = df.rename(
+        columns={
+            "startTime": "date",
+        }
+    )
+    df.loc[:, "distance"] = pd.to_numeric(df["distance"])
+    df.loc[:, "date"] = pd.to_datetime(df["date"], format="%m/%d/%y %H:%M:%S").dt.date
+    df = df.groupby(["date"]).aggregate(
+        {
+            "distance": "sum",
+        }
+    )
+    df["distance"] = df["distance"].round(2)
+    df = df[df["distance"] != 0]
+    return df
+
+def process_running(folder_path: str):
+    """Wrapper function for process fitbit running data given folder containing running
+    data jsons.
+
+    The function first extracts the data into a table then transforms it into another 
+    table.
+
+    Parameters
+    ----------
+    folder_path : str
+        Path to folder containing step data json files.
+    """
+    connection = sqlite3.connect("data/output/year_in_data.db")
+    df = extract_json_file_data(
+        folder_path=folder_path,
+        file_name_prefix="exercise",
+        keys_to_keep=["startTime", "distance"]
+    )
+    df.to_sql("fitbit_running_data_raw", connection, if_exists="replace")
+    df = transform_running_data(df)
+    df.to_sql("fitbit_running_data_processed", connection, if_exists="replace")

@@ -154,3 +154,8 @@ def get_calorie_data(year: Optional[int] = Query(None)):
 def get_steps_data(year: Optional[int] = Query(None)):
     table = "fitbit_steps_data_processed"
     return get_annual_table_data(table, year)
+
+@app.get("/running-data", response_model=List[dict])
+def get_runnning_data(year: Optional[int] = Query(None)):
+    table = "fitbit_running_data_processed"
+    return get_annual_table_data(table, year)

@@ -8,7 +8,8 @@ from yd_pipeline.process_data.github import process_github_data, get_distinct_re
 from yd_pipeline.process_data.fitbit import (
     process_sleep_data, 
     process_calorie_data,
-    process_steps
+    process_steps,
+    process_running
 )
 from pathlib import Path
 import os
@@ -57,3 +58,4 @@ fitbit_data_folderpath = (
 process_sleep_data(fitbit_data_folderpath)
 process_calorie_data(fitbit_data_folderpath)
 process_steps(fitbit_data_folderpath)
+process_running(fitbit_data_folderpath)

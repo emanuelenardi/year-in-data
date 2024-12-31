@@ -37,6 +37,7 @@ const Home = () => {
             3000: "active",
             3500: "very active"
           }}
+          units="calories"
           dataUrl="/calorie-data"
           title="Calories burned (From Fitbit)"
           description="Shows how many calories I burned. I don't know what to do with this
@@ -52,10 +53,29 @@ const Home = () => {
             5000:"mid",
             10000:"high"
           }}
+          units="steps"
           dataUrl="/steps-data"
           title="Steps per day (From Fitbit)"
           description="I walk alot on saturdays 🚶‍♂️"
           colorScheme="PuBuGn"
+        />
+
+        <TimeSeriesHeatmap
+          name="running"
+          filterMap={{
+            1:"1 km",
+            2:"2 km",
+            3:"3 km",
+            5:"5 km"
+          }}
+          units="kilometers"
+          dataUrl="/running-data"
+          dateCol="date"
+          valueCol="distance"
+          title="Running (From Fitbit)"
+          description="I keep forgetting to charge/press start on my fitbit so some of my
+          runs have been lost."
+          colorScheme="Greens"
         />
 
 
