@@ -40,7 +40,7 @@ def parse_duration(duration: str) -> float:
             duration_ms += float(hours) * 60 * 60 * 1000
         elif part.endswith("m"):
             minutes = part.rstrip("m")
-            duration_ms += float(minutes) * 60 *  1000
+            duration_ms += float(minutes) * 60 * 1000
 
     return duration_ms
 
@@ -71,6 +71,7 @@ def validate_columns(df: pd.DataFrame, columns_to_validate: list[str]) -> None:
             f"\t* Required columns: {columns_to_validate}"
         )
 
+
 def detect_delimiter(csv_file: BinaryIO) -> str:
     """
     Detect the delimiter used in a CSV file.
@@ -90,6 +91,7 @@ def detect_delimiter(csv_file: BinaryIO) -> str:
     csv_file.seek(original_pos)
     return dialect.delimiter
 
+
 def load_graphql_query(file_path: str) -> str:
     """
     Load a GraphQL query from a file.
@@ -104,6 +106,6 @@ def load_graphql_query(file_path: str) -> str:
     str
         The GraphQL query as a string.
     """
-    with open(file_path, 'r') as file:
+    with open(file_path, "r") as file:
         query = file.read()
     return query
