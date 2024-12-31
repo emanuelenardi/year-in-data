@@ -5,7 +5,7 @@ import sqlite3
 from yd_pipeline.utils import validate_columns
 
 
-def extract_json_file_data(folder_path: str, file_name_prefix: str, keys_to_keep: str) -> pd.DataFrame:
+def extract_json_file_data(folder_path: str, file_name_prefix: str, keys_to_keep: list[str]) -> pd.DataFrame:
     """Extract fitbit data from the folder path containing jsons. The files in the folder
     have the format like : "{file_name_prefix}-YYYY-MM-DD.json".
 
@@ -15,7 +15,7 @@ def extract_json_file_data(folder_path: str, file_name_prefix: str, keys_to_keep
         Path to folder containing jsons of fitbit data.
     file_name_prefix : str
         Defines what specific data to filter.
-    keys_to_keep : str
+    keys_to_keep : list[str]
         From the jsons, keys_to_keep determines which key value pairs should be kept.
 
     Returns
@@ -31,8 +31,13 @@ def extract_json_file_data(folder_path: str, file_name_prefix: str, keys_to_keep
         with open(file_path) as file:
             data_list = json.load(file)
             for data in data_list:
-                filtered_data = {key: data[key] for key in keys_to_keep}
-                full_data.append(filtered_data)
+                filtered_data = {}
+                for key in keys_to_keep:
+                    if key not in data:
+                        break
+                    filtered_data[key] = data[key]
+                if filtered_data.keys() != keys_to_keep:
+                    full_data.append(filtered_data)
 
     return pd.DataFrame(full_data)
 
