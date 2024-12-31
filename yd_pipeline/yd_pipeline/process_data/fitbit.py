@@ -130,9 +130,8 @@ def extract_calorie_data(folder_path: str) -> pd.DataFrame:
                 filtered_data = {key: data[key] for key in keys_to_keep}
                 full_data.append(filtered_data)
     
-    sleep_df = pd.DataFrame(full_data)
-    
-    return sleep_df
+    df = pd.DataFrame(full_data)
+    return df
 
 def transform_calorie_data(df: pd.DataFrame) -> pd.DataFrame:
     """Apply transformations to calorie dataframe, then saves dataframe in table:
