@@ -237,3 +237,26 @@ def process_calorie_data(folder_path: str):
     df.to_sql("fitbit_calorie_data_raw", connection, if_exists="replace")
     df = transform_calorie_data(df)
     df.to_sql("fitbit_calorie_data_processed", connection, if_exists="replace")
+
+
+def process_steps(folder_path: str):
+    """Wrapper function for process fitbit steps data given folder containing steps
+    data jsons.
+
+    The function first extracts the data into a table then transforms it into another t
+    able.
+
+    Parameters
+    ----------
+    folder_path : str
+        Path to folder containing step data json files.
+    """
+    connection = sqlite3.connect("data/output/year_in_data.db")
+    df = extract_json_file_data(
+        folder_path=folder_path,
+        file_name_prefix="steps",
+        keys_to_keep=["dateTime", "value"]
+    )
+    df.to_sql("fitbit_steps_data_raw", connection, if_exists="replace")
+    df = transform_time_series_data(df)
+    df.to_sql("fitbit_steps_data_processed", connection, if_exists="replace")
