@@ -17,16 +17,22 @@ const TimeSeriesHeatmap = (
     name,
     filterMap,
     dataUrl,
-    title,
-    description,
+    units,
+    valueCol="value",
+    dateCol="date",
+    title=name,
+    description="",
     colorScheme="Greens"
   } :
   {
     name: string,
     filterMap: { [key: number]: string },
     dataUrl: string,
-    title: string,
-    description: string,
+    units: string,
+    valueCol?: string,
+    dateCol?: string,
+    title?: string,
+    description?: string,
     colorScheme?: string
   }
 ) => {
@@ -42,24 +48,34 @@ const TimeSeriesHeatmap = (
         dateCol: "date",
         valueCol: "value",
         name: name,
-        legendLabel: `${name}s burned per day`,
+        legendLabel: `${units} per day`,
         color: {
           domain: filters,
           scheme: colorScheme
         },
-        units: `${name}s`,
+        units: units,
       }
     )
   }
 
   useEffect(() => {
+    interface FetchedData {
+      [key: string]: string | number;
+    }
+
     async function getData() {
-      const data = await fetchData<TimeSeriesData[]>(dataUrl)
-      setActivity(data)
-      drawTimeSeriesHeatmap(data)
+      const data = await fetchData<FetchedData[]>(dataUrl)
+      const modifiedData: TimeSeriesData[] = data.map(element=> {
+        return {
+          date: String(element[dateCol]),
+          value: Number(element[valueCol])
+        }
+      })
+      setActivity(modifiedData)
+      drawTimeSeriesHeatmap(modifiedData)
     }
     getData()
-  }, [cal])
+  }, [])
 
   useEffect(() => {
     let newActivity = activity
