@@ -3,7 +3,7 @@ import ReadingHeatmap from "./ReadingHeatmap/ReadingHeatmap";
 import GithubHeatmap from "./GithubHeatmap/GithubHeatmap";
 import WorkoutHeatmap from "./WorkoutHeatmap/WorkoutHeatmap";
 import SleepHeatmap from "./SleepHeatmap/SleepHeatmap";
-import CalorieHeatmap from "./CalorieHeatmap/CalorieHeatmap";
+import TimeSeriesHeatmap from "../../components/TimeSeriesHeatmap/TimeSeriesHeatmap";
 
 const Home = () => {
 
@@ -29,7 +29,36 @@ const Home = () => {
 
         <SleepHeatmap />
 
-        <CalorieHeatmap />
+        <TimeSeriesHeatmap
+          name="calorie"
+          filterMap={{
+            1500: "low",
+            2000: "normal",
+            3000: "active",
+            3500: "very active"
+          }}
+          dataUrl="/calorie-data"
+          title="Calories burned (From Fitbit)"
+          description="Shows how many calories I burned. I don't know what to do with this
+          information but here it is. Apparently the average person burns 2500 per day.
+          Fitbit overestimates how many calories a person burns per day."
+          colorScheme="YlOrRd"
+        />
+
+        <TimeSeriesHeatmap
+          name="step"
+          filterMap={{
+            1000:"low",
+            5000:"mid",
+            10000:"high"
+          }}
+          dataUrl="/steps-data"
+          title="Steps per day (From Fitbit)"
+          description="I walk alot on saturdays 🚶‍♂️"
+          colorScheme="PuBuGn"
+        />
+
+
       </div>
     </div>
   );
