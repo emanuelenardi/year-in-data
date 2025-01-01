@@ -41,16 +41,18 @@ def process_kindle_data(csv_file: BinaryIO):
 
     # For daily info
     daily_kindle_df = kindle_df[["ASIN", "start_time", "total_reading_milliseconds"]]
-    daily_kindle_df["date"] = pd.to_datetime(
-        daily_kindle_df["start_time"], format="ISO8601"
+    daily_kindle_df = daily_kindle_df.rename(columns={
+        "start_time": "date"
+    })
+    daily_kindle_df.loc[:, "date"] = pd.to_datetime(
+        daily_kindle_df["date"], format="ISO8601"
     ).dt.date
-    daily_kindle_df = daily_kindle_df[["ASIN", "date", "total_reading_milliseconds"]]
     daily_kindle_df = daily_kindle_df.groupby(["ASIN", "date"]).sum()
     daily_kindle_df["total_reading_minutes"] = daily_kindle_df[
         "total_reading_milliseconds"
     ].apply(lambda x: round(x / (60 * 1000)))
     daily_kindle_df = daily_kindle_df.drop(columns=["total_reading_milliseconds"])
-    daily_kindle_df = daily_kindle_df[daily_kindle_df["total_reading_minutes"] != 0]
+    daily_kindle_df = daily_kindle_df[daily_kindle_df["total_reading_minutes"] >= 15]
     daily_kindle_df.to_sql("kindle_data_daily", connection, if_exists="replace")
 
 
