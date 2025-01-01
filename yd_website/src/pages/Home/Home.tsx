@@ -2,7 +2,6 @@ import styles from "./Home.module.css"
 import ReadingHeatmap from "./ReadingHeatmap/ReadingHeatmap";
 import GithubHeatmap from "./GithubHeatmap/GithubHeatmap";
 import WorkoutHeatmap from "./WorkoutHeatmap/WorkoutHeatmap";
-import SleepHeatmap from "./SleepHeatmap/SleepHeatmap";
 import TimeSeriesHeatmap from "../../components/TimeSeriesHeatmap/TimeSeriesHeatmap";
 
 const Home = () => {
@@ -20,14 +19,63 @@ const Home = () => {
       <div
         className={styles.mainContent}
       >
-
-        <WorkoutHeatmap />
-
         <ReadingHeatmap />
 
         <GithubHeatmap />
 
-        <SleepHeatmap />
+        <WorkoutHeatmap />
+
+        <TimeSeriesHeatmap
+          name="running"
+          filterMap={{
+            1: "1 km",
+            2: "2 km",
+            3: "3 km",
+            5: "5 km"
+          }}
+          units="kilometers"
+          dataUrl="/running-data"
+          dateCol="date"
+          valueCol="distance"
+          title="Running (From Fitbit)"
+          description="I keep forgetting to charge/press start on my fitbit so some of my
+          runs have been lost."
+          colorScheme="Greens"
+        />
+
+        <TimeSeriesHeatmap
+          name="step"
+          filterMap={{
+            1000: "low",
+            5000: "mid",
+            10000: "high"
+          }}
+          units="steps"
+          dataUrl="/steps-data"
+          title="Steps per day (From Fitbit)"
+          description="I walk alot on saturdays 🚶‍♂️"
+          colorScheme="PuBuGn"
+        />
+
+
+        <TimeSeriesHeatmap
+          name="sleep"
+          filterMap={{
+            4: "sleep deprived",
+            6: "not good not great",
+            8: "good sleep",
+            10: "overslept"
+          }}
+          units="hours"
+          dataUrl="/sleep-data"
+          valueCol="total_duration_hours"
+          title="Hours slept per day (From Fitbit)"
+          description="Sleep was much better than expected. Especially recently in 
+          December, I am getting days when I sleep for 10 hours :0. Lol you can see 
+          when I lost my Fitbit in February. I am also surprised at how often I have my 
+          fitbit on."
+          colorScheme="Purples"
+        />
 
         <TimeSeriesHeatmap
           name="calorie"
@@ -45,39 +93,6 @@ const Home = () => {
           Fitbit overestimates how many calories a person burns per day."
           colorScheme="YlOrRd"
         />
-
-        <TimeSeriesHeatmap
-          name="step"
-          filterMap={{
-            1000:"low",
-            5000:"mid",
-            10000:"high"
-          }}
-          units="steps"
-          dataUrl="/steps-data"
-          title="Steps per day (From Fitbit)"
-          description="I walk alot on saturdays 🚶‍♂️"
-          colorScheme="PuBuGn"
-        />
-
-        <TimeSeriesHeatmap
-          name="running"
-          filterMap={{
-            1:"1 km",
-            2:"2 km",
-            3:"3 km",
-            5:"5 km"
-          }}
-          units="kilometers"
-          dataUrl="/running-data"
-          dateCol="date"
-          valueCol="distance"
-          title="Running (From Fitbit)"
-          description="I keep forgetting to charge/press start on my fitbit so some of my
-          runs have been lost."
-          colorScheme="Greens"
-        />
-
 
       </div>
     </div>
