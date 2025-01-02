@@ -55,10 +55,12 @@ const ReadingHeatmap = () => {
         setSelectedIndex={setSelectedBook}
       />
       <p>
-        I feel my reading habit comes and goes in waves. Although from september onward
-        I've been locked in. That's when I started daily driving the Hisense A9 as my
-        phone. It has an e-ink screen so it meant I didn't have to go find my kindle
-        to read.
+        My goal for this year was to read 20 books, but I only managed to read about 14. I started
+        out strong in January and February, but my reading dropped off in March and April. I picked
+        the habit back up in May, but the books I was reading couldn't hold my attention. 
+        During June, July, and August, I forgot about reading altogether. 
+        In September, I replaced my Samsung S10 with an e-ink reader (Hisense A9), 
+        and since then, I've been reading almost every single day :].
       </p>
     </div>
   );

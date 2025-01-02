@@ -38,8 +38,10 @@ const Home = () => {
           dateCol="date"
           valueCol="distance"
           title="Running (From Fitbit)"
-          description="I keep forgetting to charge/press start on my fitbit so some of my
-          runs have been lost."
+          description="April I decided to get back into running, did it for a few weeks
+          then gave up. I started again in June and I was fairly consistent till 
+          start of November when the weather got bad.
+          "
           colorScheme="Greens"
         />
 
@@ -53,7 +55,7 @@ const Home = () => {
           units="steps"
           dataUrl="/steps-data"
           title="Steps per day (From Fitbit)"
-          description="I walk alot on saturdays 🚶‍♂️"
+          description="I walk 🚶‍♂️"
           colorScheme="PuBuGn"
         />
 
@@ -70,10 +72,10 @@ const Home = () => {
           dataUrl="/sleep-data"
           valueCol="total_duration_hours"
           title="Hours slept per day (From Fitbit)"
-          description="Sleep was much better than expected. Especially recently in 
-          December, I am getting days when I sleep for 10 hours :0. Lol you can see 
-          when I lost my Fitbit in February. I am also surprised at how often I have my 
-          fitbit on."
+          description="Sleep is surprisingly better than expected. I have a feeling this
+          is because I extract the time spent in bed rather than actual sleep. I should
+          probably fix this at some point. You can see 
+          when I lost my Fitbit in February lol."
           colorScheme="Purples"
         />
 
@@ -88,9 +90,10 @@ const Home = () => {
           units="calories"
           dataUrl="/calorie-data"
           title="Calories burned (From Fitbit)"
-          description="Shows how many calories I burned. I don't know what to do with this
-          information but here it is. Apparently the average person burns 2500 per day.
-          Fitbit overestimates how many calories a person burns per day."
+          description="Shows how many calories. The average person burns 2500 per day but I'm
+          getting days where I burn over 3000. I did some research online and found that
+          Fitbit overestimates how many calories a person burns per day by 30%,
+          so I have no idea how accurate this is."
           colorScheme="YlOrRd"
         />
 

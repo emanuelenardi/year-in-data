@@ -83,9 +83,12 @@ const WorkoutHeatmap = () => {
 
 
       <p>
-        Damn I fell off. Although I feel like I've still been gaining muscle more now.
-        I started my first job near the end of April. You can see how the frequency
-        decreases after this point.
+        January, February March I was in the gym almost everyday. End of April I started
+        working and the frequency has been slowly declining ever since. I think I was 
+        over doing it at the start going in 5 to 6 times per week. Although, it did help me 
+        establish the habit of going and this helped me endure the habit till the end of the year.
+        I'll probably stick to just 3 to 4 days a week because I'm still 
+        making roughly the same amount of progress.
       </p>
     </div>
   );
