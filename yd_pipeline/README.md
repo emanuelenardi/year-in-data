@@ -6,7 +6,7 @@ Post request files -> run pipeline on files -> store in sql db -> Get request js
 
 Commands | Description
 -|-
-`poetry run fastapi dev yd_pipeline/api/main.py` | Serve the background API using FastAPI
+`poetry run fastapi dev api/main.py` | Serve the background API using FastAPI
 `poetry run python main.py` | Run the data pipeline
 
 ## Tech stack 
